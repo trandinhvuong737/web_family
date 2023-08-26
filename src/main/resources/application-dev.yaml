@@ -1,0 +1,11 @@
+server:
+  port: 8080
+
+swagger-ui:
+  server:
+    url: 'http://192.168.195.111:8080'
+
+spring:
+  config:
+    activate:
+      on-profile: dev
