@@ -46,6 +46,10 @@ public class OrderServiceIml implements OrderService {
                 () -> new BadRequestException(
                         new SysError(Errors.ERROR_USER_NOT_FOUND, new ErrorParam(Errors.USERNAME)))
         );
+        if(!Status.getDisplayNames().contains(orderRequest.getStatus())){
+            throw new BadRequestException(
+                    new SysError(Errors.ERROR_STATUS_FALSE, new ErrorParam(Errors.STATUS)));
+        }
         Order order = new Order();
         order.setUser(user);
         order.setAddress(orderRequest.getAddress());

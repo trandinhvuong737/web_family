@@ -20,4 +20,8 @@ public interface OrderRepository extends JpaRepository<Order,Integer> {
 
     @Query("SELECT count (o.orderId) FROM Order o WHERE o.createAt = :date")
     int countOrder(LocalDate date);
+
+    @Query("SELECT o FROM Order o WHERE o.status = 'completed' ")
+    List<Order> getOrdersByStatus();
+
 }

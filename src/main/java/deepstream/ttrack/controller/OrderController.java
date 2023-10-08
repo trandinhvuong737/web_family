@@ -42,7 +42,7 @@ public class OrderController {
     }
 
     @DeleteMapping("/delete/{orderId}")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAnyRole('ROLE_SUPER_ADMIN','ROLE_ADMIN')")
     public ResponseEntity<ResponseJson<Boolean>> createDevice(@PathVariable int orderId) {
         orderService.deleteOrder(orderId);
         return ResponseEntity.ok().body(

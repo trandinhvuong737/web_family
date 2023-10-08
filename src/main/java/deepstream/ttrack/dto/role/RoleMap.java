@@ -1,4 +1,4 @@
-package deepstream.ttrack.dto.product;
+package deepstream.ttrack.dto.role;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,11 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductRequestDto {
-
-    private String productName;
-
-    private int unitPrice;
-
-    private int weight;
+public class RoleMap {
+    private int roleId;
+    private String name;
 }

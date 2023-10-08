@@ -23,4 +23,6 @@ public class Product {
     @Column(name = "unit_price")
     private int unitPrice;
 
+    @Column(name = "weight")
+    private int weight;
 }
