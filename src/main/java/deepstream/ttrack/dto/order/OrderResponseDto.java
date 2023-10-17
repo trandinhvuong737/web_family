@@ -9,7 +9,7 @@ import java.time.LocalDate;
 @Setter
 public class OrderResponseDto {
 
-    private int orderId;
+    private Integer orderId;
 
     private LocalDate createAt = LocalDate.now();
 
@@ -21,7 +21,7 @@ public class OrderResponseDto {
 
     private String product;
 
-    private int quantity;
+    private Integer quantity;
 
     private String status;
 }

@@ -5,6 +5,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import javax.validation.constraints.DecimalMax;
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+import java.math.BigDecimal;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -13,7 +19,7 @@ public class ProductRequestDto {
 
     private String productName;
 
-    private int unitPrice;
+    private Long unitPrice;
 
-    private int weight;
+    private Integer weight;
 }

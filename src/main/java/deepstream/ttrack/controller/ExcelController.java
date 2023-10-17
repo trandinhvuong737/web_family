@@ -2,10 +2,7 @@ package deepstream.ttrack.controller;
 
 import deepstream.ttrack.service.ExcelService;
 import lombok.AllArgsConstructor;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
-import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,6 +24,15 @@ public class ExcelController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<byte[]> exportToExcel(HttpServletResponse response) throws IOException {
         excelService.exportToExcel(response);
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=data.xlsx")
+                .body(response.getOutputStream().toString().getBytes());
+    }
+
+    @GetMapping("/export-vn-post")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<byte[]> exportToExcelVnPost(HttpServletResponse response) throws IOException {
+        excelService.exportToExcelVnPost(response);
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=data.xlsx")
                 .body(response.getOutputStream().toString().getBytes());

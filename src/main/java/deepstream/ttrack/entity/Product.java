@@ -3,6 +3,7 @@ package deepstream.ttrack.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "product")
@@ -21,7 +22,7 @@ public class Product {
     private String productName;
 
     @Column(name = "unit_price")
-    private int unitPrice;
+    private long unitPrice;
 
     @Column(name = "weight")
     private int weight;
