@@ -31,16 +31,6 @@ public class JwtUtils {
     private int jwtExpirationMs;
     private Collection<GrantedAuthority> authorities;
 
-//    public String generateJwtToken(Authentication authentication) {
-//        User userPrinciple = (User) authentication.getPrincipal();
-//        SecretKey secret = getSecretKey();
-//        return Jwts.builder()
-//                .setSubject((userPrinciple.getUsername()))
-//                .setIssuedAt(new Date())
-//                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-//                .signWith(secret)
-//                .compact();
-//    }
 
     public String generateJwtToken(Authentication authentication) {
         User userPrinciple = (User) authentication.getPrincipal();

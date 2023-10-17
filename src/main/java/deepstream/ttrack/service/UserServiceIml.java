@@ -38,11 +38,10 @@ public class UserServiceIml implements UserService {
     }
     @Override
     public User getUserByUsername(String username) {
-        User user = userRepository.findByUsername(username).orElseThrow(
+        return userRepository.findByUsername(username).orElseThrow(
                 () -> new BadRequestException(
                         new SysError(Errors.ERROR_USER_NOT_FOUND, new ErrorParam(Errors.ID)))
         );
-        return user;
     }
 
     @Override

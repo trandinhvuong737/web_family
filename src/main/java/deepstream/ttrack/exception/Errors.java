@@ -26,6 +26,10 @@ public class Errors {
     public static final String ROLE = "role";
     public static final String USER = "user";
     public static final String PRODUCT_ID = "product-id";
+    public static final String UNIT_PRICE = "unit price";
+    public static final String UNIT_PRICE_LIMIT = "over the unit price class limit";
+
+
 
 
 

@@ -40,12 +40,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
                 getAuthorities(Arrays.asList(user.getRole())));
     }
 
-//    private Collection<? extends GrantedAuthority> getAuthorities(Role role) {
-//        List<GrantedAuthority> authorities = new ArrayList<>();
-//            authorities.add(new SimpleGrantedAuthority(role.getName()));
-//        return authorities;
-//    }
-
     private Collection<? extends GrantedAuthority> getAuthorities(List<Role> roles) {
         List<String> privileges = getPrivilegesWithRole(roles);
         List<GrantedAuthority> authorities = new ArrayList<>();

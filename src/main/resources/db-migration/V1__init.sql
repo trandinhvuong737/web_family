@@ -39,7 +39,7 @@ CREATE TABLE public.product
 (
     product_id serial NOT NULL ,
     product_name varchar NULL ,
-    unit_price int4 NULL ,
+    unit_price bigint NULL ,
     weight int NULL ,
     CONSTRAINT product_pk PRIMARY KEY (product_id)
 );

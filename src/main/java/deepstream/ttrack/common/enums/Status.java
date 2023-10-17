@@ -17,11 +17,6 @@ public enum Status {
         this.displayName = displayName;
     }
 
-    public String getDisplayName() {
-        return displayName;
-    }
-
-    // Thêm phương thức để chuyển Enum thành danh sách giá trị hiển thị
     public static List<String> getDisplayNames() {
         List<String> displayNames = new ArrayList<>();
         for (Status status : Status.values()) {

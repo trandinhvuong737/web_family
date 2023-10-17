@@ -34,7 +34,7 @@ public class Order {
     private String product;
 
     @Column(name = "quantity")
-    private int quantity;
+    private double quantity;
 
     @Column(name = "status")
     private String status;

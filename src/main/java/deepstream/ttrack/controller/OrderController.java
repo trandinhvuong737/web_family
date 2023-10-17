@@ -1,17 +1,18 @@
 package deepstream.ttrack.controller;
 
 import deepstream.ttrack.common.constant.Constant;
-import deepstream.ttrack.dto.PageRequest;
+import deepstream.ttrack.dto.DateRangeDto;
 import deepstream.ttrack.dto.ResponseJson;
 import deepstream.ttrack.dto.order.OrderRequestDto;
 import deepstream.ttrack.dto.order.OrderResponseDto;
 import deepstream.ttrack.service.OrderService;
 import lombok.AllArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/order")
@@ -50,10 +51,19 @@ public class OrderController {
 
     }
 
-    @PostMapping("/get-all-order")
+    @GetMapping("/get-all-order")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ResponseJson<Page<OrderResponseDto>>> createDevice(@RequestBody PageRequest pageRequest) {
-        Page<OrderResponseDto> orders = orderService.getAllOrder(pageRequest);
+    public ResponseEntity<ResponseJson<List<OrderResponseDto>>> createDevice() {
+        List<OrderResponseDto> orders = orderService.getAllOrder();
+        return ResponseEntity.ok().body(
+                new ResponseJson<>(orders, HttpStatus.OK, Constant.SUCCESS));
+
+    }
+
+    @PostMapping("/get-order-by-date-range")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ResponseJson<List<OrderResponseDto>>> filterOrderByDateRange( @RequestBody DateRangeDto dateRangeDto) {
+        List<OrderResponseDto> orders = orderService.getAllOrderByFilter(dateRangeDto);
         return ResponseEntity.ok().body(
                 new ResponseJson<>(orders, HttpStatus.OK, Constant.SUCCESS));
 

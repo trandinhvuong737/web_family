@@ -18,7 +18,6 @@ import deepstream.ttrack.exception.SysError;
 import deepstream.ttrack.repository.OrderRepository;
 import deepstream.ttrack.repository.ProductRepository;
 import deepstream.ttrack.repository.UserRepository;
-import org.springframework.data.domain.*;
 import deepstream.ttrack.mapper.OrderMapper;
 import org.springframework.stereotype.Service;
 
@@ -40,7 +39,7 @@ public class OrderServiceIml implements OrderService {
     }
 
     @Override
-    public boolean addNewOrder(OrderRequestDto orderRequest) {
+    public void addNewOrder(OrderRequestDto orderRequest) {
         String username = WebUtils.getUsername();
         User user = userRepository.findByUsername(username).orElseThrow(
                 () -> new BadRequestException(
@@ -60,11 +59,10 @@ public class OrderServiceIml implements OrderService {
         order.setQuantity(orderRequest.getQuantity());
         order.setStatus(orderRequest.getStatus());
         orderRepository.save(order);
-        return false;
     }
 
     @Override
-    public boolean updateOrder(int orderId, OrderRequestDto orderRequest) {
+    public void updateOrder(int orderId, OrderRequestDto orderRequest) {
         Order order = orderRepository.findById(orderId).orElseThrow(
                 () -> new BadRequestException(
                         new SysError(Errors.ERROR_ORDER_NOT_FOUND, new ErrorParam(Errors.ORDER_ID)))
@@ -75,38 +73,27 @@ public class OrderServiceIml implements OrderService {
         order.setPhoneNumber(orderRequest.getPhoneNumber());
         order.setQuantity(orderRequest.getQuantity());
         orderRepository.save(order);
-        return true;
     }
 
     @Override
-    public boolean deleteOrder(int id) {
+    public void deleteOrder(int id) {
         Order order = orderRepository.findById(id).orElseThrow(
                 () -> new BadRequestException(
                         new SysError(Errors.ERROR_USER_NOT_FOUND, new ErrorParam(Errors.ID)))
         );
         orderRepository.delete(order);
-        return true;
     }
 
     @Override
-    public Page<OrderResponseDto> getAllOrder(deepstream.ttrack.dto.PageRequest pageRequest) {
+    public List<OrderResponseDto> getAllOrder() {
 
-        Pageable pageable = PageRequest.of(
-                pageRequest.getPage() - 1,
-                pageRequest.getSize(),
-                Sort.by(pageRequest.getSortBy(), pageRequest.getSortField()));
-
-        List<Order> orders = orderRepository.getAllOrder(
-                pageable,
-                pageRequest.getDateRange().getStartDate(),
-                pageRequest.getDateRange().getEndDate());
-        int size = orderRepository.findAll().size();
+        List<Order> orders = orderRepository.getAllOrder();
 
         List<OrderResponseDto> orderResponse = new ArrayList<>();
         orders.stream()
                 .map(OrderMapper.INSTANCE::orderToOrderResponseDto)
                 .forEach(orderResponse::add);
-        return new PageImpl<>(orderResponse, pageable, size);
+        return orderResponse;
     }
 
     @Override
@@ -129,19 +116,21 @@ public class OrderServiceIml implements OrderService {
     @Override
     public OverviewDto getOverview(DateRangeDto dateRange) {
         OverviewDto overview = new OverviewDto();
-        int totalProduct = 0, totalOrder, totalAmount = 0;
-        List<Order> orders = orderRepository.getAllOrder(dateRange.getStartDate(),dateRange.getEndDate());
+        int totalProduct = 0;
+        int totalOrder;
+        long totalAmount = 0;
+        List<Order> orders = orderRepository.getOrderByDateRange(dateRange.getStartDate(),dateRange.getEndDate());
         for (Order order:orders
              ) {
             Product product = productRepository.getProductByProductName(order.getProduct());
-            totalProduct += order.getQuantity();
-            totalAmount += order.getQuantity() * product.getUnitPrice();
+            totalProduct += (int) order.getQuantity();
+            totalAmount += (long) (order.getQuantity() * product.getUnitPrice());
         }
         totalOrder = orders.size();
         overview.setTotalOrder(totalOrder);
         overview.setTotalProduct(totalProduct);
         overview.setTotalAmount(totalAmount);
-        return null;
+        return overview;
     }
 
     @Override
@@ -159,5 +148,15 @@ public class OrderServiceIml implements OrderService {
             }
         }
         return chartOverviews;
+    }
+
+    @Override
+    public List<OrderResponseDto> getAllOrderByFilter(DateRangeDto dateRangeDto) {
+        List<Order> orders = orderRepository.getOrderByDateRange(dateRangeDto.getStartDate(), dateRangeDto.getEndDate());
+        List<OrderResponseDto> orderResponse = new ArrayList<>();
+        orders.stream()
+                .map(OrderMapper.INSTANCE::orderToOrderResponseDto)
+                .forEach(orderResponse::add);
+        return orderResponse;
     }
 }

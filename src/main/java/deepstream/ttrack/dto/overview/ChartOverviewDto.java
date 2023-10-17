@@ -9,5 +9,5 @@ import java.time.LocalDate;
 @Setter
 public class ChartOverviewDto {
     private LocalDate date;
-    private int totalOrder;
+    private Integer totalOrder;
 }
