@@ -1,6 +1,7 @@
 package deepstream.ttrack.service;
 
 import deepstream.ttrack.dto.user.UserDto;
+import deepstream.ttrack.dto.user.UserUpdate;
 import deepstream.ttrack.entity.Role;
 import deepstream.ttrack.entity.User;
 import deepstream.ttrack.exception.BadRequestException;
@@ -56,19 +57,20 @@ public class UserServiceIml implements UserService {
     }
 
     @Override
-    public void updateUser(UserDto userDto, int id) {
+    public void updateUser(UserUpdate userUpdate, int id) {
         User users = userRepository.findById(id).orElseThrow(
                 () -> new BadRequestException(
                         new SysError(Errors.ERROR_USER_NOT_FOUND, new ErrorParam(Errors.ID)))
         );
-        Role role = roleRepository.getRoleByName(userDto.getRole().getName()).orElseThrow(
+        Role role = roleRepository.getRoleByRoleId(userUpdate.getRoleId()).orElseThrow(
                 () -> new BadRequestException(
                         new SysError(Errors.ERROR_ROLE_NOT_FOUND, new ErrorParam(Errors.ROLE_ID)))
         );
-        users.setUsername(userDto.getUsername());
-        users.setEmail(userDto.getEmail() );
+
+        users.setUsername(userUpdate.getUsername());
+        users.setEmail(userUpdate.getEmail() );
         users.setRole(role);
-        users.setPassword(encoder.encode(userDto.getPassword()));
+        users.setPassword(encoder.encode(userUpdate.getPassword()));
         userRepository.save(users);
     }
 
