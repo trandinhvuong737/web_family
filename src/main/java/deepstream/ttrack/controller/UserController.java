@@ -3,6 +3,7 @@ package deepstream.ttrack.controller;
 import deepstream.ttrack.common.constant.Constant;
 import deepstream.ttrack.dto.ResponseJson;
 import deepstream.ttrack.dto.user.UserDto;
+import deepstream.ttrack.dto.user.UserUpdate;
 import deepstream.ttrack.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -31,8 +32,8 @@ public class UserController {
     @PreAuthorize("hasAnyRole('ROLE_SUPER_ADMIN','ROLE_ADMIN')")
     public ResponseEntity<ResponseJson<Boolean>> getAllUser(
             @PathVariable int id,
-            @RequestBody UserDto userDto) {
-        userService.updateUser(userDto,id);
+            @RequestBody UserUpdate userUpdate) {
+        userService.updateUser(userUpdate, id);
         return ResponseEntity.ok().body(
                 new ResponseJson<>(true, HttpStatus.OK, Constant.SUCCESS));
 
