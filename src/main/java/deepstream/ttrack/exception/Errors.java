@@ -28,8 +28,7 @@ public class Errors {
     public static final String PRODUCT_ID = "product-id";
     public static final String UNIT_PRICE = "unit price";
     public static final String UNIT_PRICE_LIMIT = "over the unit price class limit";
-
-
+    public static final String ERROR_ROLE = "Do not delete role super admin";
 
 
 

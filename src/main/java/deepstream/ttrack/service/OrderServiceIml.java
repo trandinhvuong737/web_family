@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,7 +55,7 @@ public class OrderServiceIml implements OrderService {
         order.setAddress(orderRequest.getAddress());
         order.setCustomer(orderRequest.getCustomer());
         order.setProduct(orderRequest.getProduct());
-        order.setCreateAt(LocalDate.now());
+        order.setCreateAt(LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh")));
         order.setPhoneNumber(orderRequest.getPhoneNumber());
         order.setQuantity(orderRequest.getQuantity());
         order.setStatus(orderRequest.getStatus());
@@ -72,6 +73,7 @@ public class OrderServiceIml implements OrderService {
         order.setProduct(orderRequest.getProduct());
         order.setPhoneNumber(orderRequest.getPhoneNumber());
         order.setQuantity(orderRequest.getQuantity());
+        order.setStatus(orderRequest.getStatus());
         orderRepository.save(order);
     }
 
@@ -136,7 +138,7 @@ public class OrderServiceIml implements OrderService {
     @Override
     public List<ChartOverviewDto> getChartOverview() {
         List<ChartOverviewDto> chartOverviews = new ArrayList<>();
-        LocalDate date = LocalDate.now();
+        LocalDate date = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));
         for(int i = 0; i<=7; i++){
             ChartOverviewDto overviewDto = new ChartOverviewDto();
             LocalDate minusDays = date.minusDays(i);

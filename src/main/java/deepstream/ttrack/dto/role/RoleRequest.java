@@ -9,6 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoleMap {
+public class RoleRequest {
     private String name;
+    private String description;
 }
