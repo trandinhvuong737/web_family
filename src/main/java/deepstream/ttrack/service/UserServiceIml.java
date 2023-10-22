@@ -8,7 +8,6 @@ import deepstream.ttrack.exception.BadRequestException;
 import deepstream.ttrack.exception.ErrorParam;
 import deepstream.ttrack.exception.Errors;
 import deepstream.ttrack.exception.SysError;
-import deepstream.ttrack.mapper.UserMapper;
 import deepstream.ttrack.repository.RoleRepository;
 import deepstream.ttrack.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -49,9 +48,15 @@ public class UserServiceIml implements UserService {
     public List<UserDto> getAllUser() {
         List<User> users = userRepository.findAll();
         List<UserDto> userDtos = new ArrayList<>();
-        for (User user:users
-             ) {
-            userDtos.add(UserMapper.INSTANCE.UserToUserDto(user));
+        for (User user:users) {
+            UserDto userDto = new UserDto();
+            userDto.setId(user.getId());
+            userDto.setEmail(user.getEmail());
+            userDto.setUsername(user.getUsername());
+            userDto.setPassword(user.getPassword());
+            userDto.setRoleId(user.getRole().getRoleId());
+            userDto.setRoleName(user.getRole().getName());
+            userDtos.add(userDto);
         }
         return userDtos;
     }
