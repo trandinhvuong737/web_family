@@ -8,7 +8,6 @@ import deepstream.ttrack.exception.BadRequestException;
 import deepstream.ttrack.exception.ErrorParam;
 import deepstream.ttrack.exception.Errors;
 import deepstream.ttrack.exception.SysError;
-import deepstream.ttrack.mapper.UserMapper;
 import deepstream.ttrack.repository.RoleRepository;
 import deepstream.ttrack.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
