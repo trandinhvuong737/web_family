@@ -27,11 +27,12 @@ public class UserController {
 
     }
 
-    @PutMapping("/update")
+    @PutMapping("/update/{id}")
     @PreAuthorize("hasAnyRole('ROLE_SUPER_ADMIN','ROLE_ADMIN')")
     public ResponseEntity<ResponseJson<Boolean>> getAllUser(
+            @PathVariable int id,
             @RequestBody UserDto userDto) {
-        userService.updateUser(userDto);
+        userService.updateUser(userDto,id);
         return ResponseEntity.ok().body(
                 new ResponseJson<>(true, HttpStatus.OK, Constant.SUCCESS));
 

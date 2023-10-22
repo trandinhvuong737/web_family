@@ -56,12 +56,12 @@ public class UserServiceIml implements UserService {
     }
 
     @Override
-    public void updateUser(UserDto userDto) {
-        User users = userRepository.findById(userDto.getId()).orElseThrow(
+    public void updateUser(UserDto userDto, int id) {
+        User users = userRepository.findById(id).orElseThrow(
                 () -> new BadRequestException(
                         new SysError(Errors.ERROR_USER_NOT_FOUND, new ErrorParam(Errors.ID)))
         );
-        Role role = roleRepository.findById(userDto.getRole().getRoleId()).orElseThrow(
+        Role role = roleRepository.getRoleByName(userDto.getRole().getName()).orElseThrow(
                 () -> new BadRequestException(
                         new SysError(Errors.ERROR_ROLE_NOT_FOUND, new ErrorParam(Errors.ROLE_ID)))
         );

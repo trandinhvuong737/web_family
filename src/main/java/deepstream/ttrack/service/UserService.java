@@ -13,7 +13,7 @@ public interface UserService {
 
     List<UserDto> getAllUser();
 
-    void updateUser(UserDto userDto);
+    void updateUser(UserDto userDto,int id);
 
     void delete(int userId);
 
