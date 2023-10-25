@@ -44,7 +44,7 @@ public class ProductController {
             @RequestBody ProductRequestDto product) {
         productService.updateProductById(productId, product);
         return ResponseEntity.ok().body(
-                new ResponseJson<>(true, HttpStatus.OK, Constant.SUCCESS));
+                new ResponseJson<>(true, HttpStatus.OK, Constant.UPDATE_PRODUCT_SUCCESS));
 
     }
 
@@ -53,7 +53,7 @@ public class ProductController {
     public ResponseEntity<ResponseJson<Boolean>> addNewProduct(@RequestBody ProductRequestDto product) {
         productService.addNewProduct(product);
         return ResponseEntity.ok().body(
-                new ResponseJson<>(true, HttpStatus.OK, Constant.SUCCESS));
+                new ResponseJson<>(true, HttpStatus.OK, Constant.ADD_PRODUCT_SUCCESS));
 
     }
 
@@ -62,7 +62,7 @@ public class ProductController {
     public ResponseEntity<ResponseJson<Boolean>> deleteProductById(@PathVariable int productId) {
         productService.deleteProductById(productId);
         return ResponseEntity.ok().body(
-                new ResponseJson<>(true, HttpStatus.OK, Constant.SUCCESS));
+                new ResponseJson<>(true, HttpStatus.OK, Constant.DELETE_PRODUCT_SUCCESS));
 
     }
 }

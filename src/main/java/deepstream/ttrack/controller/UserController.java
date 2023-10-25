@@ -35,7 +35,7 @@ public class UserController {
             @RequestBody UserUpdate userUpdate) {
         userService.updateUser(userUpdate, id);
         return ResponseEntity.ok().body(
-                new ResponseJson<>(true, HttpStatus.OK, Constant.SUCCESS));
+                new ResponseJson<>(true, HttpStatus.OK, Constant.UPDATE_USER_SUCCESS));
 
     }
 
@@ -44,7 +44,7 @@ public class UserController {
     public ResponseEntity<ResponseJson<Boolean>> getAllUser(@PathVariable int userId) {
         userService.delete(userId);
         return ResponseEntity.ok().body(
-                new ResponseJson<>(true, HttpStatus.OK, Constant.SUCCESS));
+                new ResponseJson<>(true, HttpStatus.OK, Constant.DELETE_USER_SUCCESS));
 
     }
 
