@@ -27,7 +27,7 @@ public class OrderController {
     public ResponseEntity<ResponseJson<Boolean>> createDevice(@RequestBody OrderRequestDto orderRequestDto) {
         orderService.addNewOrder(orderRequestDto);
         return ResponseEntity.ok().body(
-                new ResponseJson<>(true, HttpStatus.OK, Constant.SUCCESS));
+                new ResponseJson<>(true, HttpStatus.OK, Constant.ADD_ORDER_SUCCESS));
 
     }
 
@@ -38,7 +38,7 @@ public class OrderController {
             @RequestBody OrderRequestDto orderRequestDto) {
         orderService.updateOrder(orderId, orderRequestDto);
         return ResponseEntity.ok().body(
-                new ResponseJson<>(true, HttpStatus.OK, Constant.SUCCESS));
+                new ResponseJson<>(true, HttpStatus.OK, Constant.UPDATE_ORDER_SUCCESS));
 
     }
 
@@ -47,7 +47,7 @@ public class OrderController {
     public ResponseEntity<ResponseJson<Boolean>> createDevice(@PathVariable int orderId) {
         orderService.deleteOrder(orderId);
         return ResponseEntity.ok().body(
-                new ResponseJson<>(true, HttpStatus.OK, Constant.SUCCESS));
+                new ResponseJson<>(true, HttpStatus.OK, Constant.DELETE_ORDER_SUCCESS));
 
     }
 
@@ -76,7 +76,7 @@ public class OrderController {
             @PathVariable String status) {
         orderService.updateStatus(orderId, status);
         return ResponseEntity.ok().body(
-                new ResponseJson<>(true, HttpStatus.OK, Constant.SUCCESS));
+                new ResponseJson<>(true, HttpStatus.OK, Constant.UPDATE_STATUS_ORDER_SUCCESS));
 
     }
 }

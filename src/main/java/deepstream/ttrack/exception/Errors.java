@@ -13,6 +13,7 @@ public class Errors {
     public static final String ERROR_ORDER_NOT_FOUND = "Order-not-found";
     public static final String ERROR_ROLE_NOT_FOUND = "role-not-found";
     public static final String ERROR_STATUS_FALSE = "error-status-false";
+    public static final String DATE_RANGE_NULL = "date-range-null";
     public static final String NOT_FOUND = "not-found";
     public static final String ERROR_EMAIL_NOT_FOUND = "email-not-found";
     public static final String ERROR_USER_NAME_OR_PASSWORD_NOT_FOUND = "user-name-or-password-not-found";
@@ -20,8 +21,8 @@ public class Errors {
     public static final String ID = "id";
     public static final String ORDER_ID = "order-id";
     public static final String ROLE_ID = "role-id";
-
     public static final String STATUS = "status";
+    public static final String DATE_RANGE = "Date range";
     public static final String EMAIL = "email";
     public static final String ROLE = "role";
     public static final String USER = "user";

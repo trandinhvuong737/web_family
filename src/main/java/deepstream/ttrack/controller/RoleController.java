@@ -2,11 +2,8 @@ package deepstream.ttrack.controller;
 
 import deepstream.ttrack.common.constant.Constant;
 import deepstream.ttrack.dto.ResponseJson;
-import deepstream.ttrack.dto.product.ProductResponseDto;
 import deepstream.ttrack.dto.role.RoleDto;
 import deepstream.ttrack.dto.role.RoleRequest;
-import deepstream.ttrack.entity.Role;
-import deepstream.ttrack.service.ProductService;
 import deepstream.ttrack.service.RoleService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,7 +32,7 @@ public class RoleController {
     public ResponseEntity<ResponseJson<Boolean>> addNewRole(
             @RequestBody RoleRequest roleRequest) {
         roleService.addNewRole(roleRequest);
-        return ResponseEntity.ok().body(new ResponseJson<>(Boolean.TRUE, HttpStatus.OK, Constant.SUCCESS));
+        return ResponseEntity.ok().body(new ResponseJson<>(Boolean.TRUE, HttpStatus.OK, Constant.ADD_ROLE_SUCCESS));
 
     }
 
@@ -44,7 +41,7 @@ public class RoleController {
     public ResponseEntity<ResponseJson<Boolean>> deleteRole(
             @PathVariable int id) {
         roleService.deleteRole(id);
-        return ResponseEntity.ok().body(new ResponseJson<>(Boolean.TRUE, HttpStatus.OK, Constant.SUCCESS));
+        return ResponseEntity.ok().body(new ResponseJson<>(Boolean.TRUE, HttpStatus.OK, Constant.DELETE_ROLE_SUCCESS));
 
     }
 }

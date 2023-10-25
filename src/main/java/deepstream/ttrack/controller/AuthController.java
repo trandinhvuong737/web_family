@@ -101,7 +101,7 @@ public class AuthController {
 
         userRepository.save(user);
 
-        return ResponseEntity.ok().body(new ResponseJson<>(Boolean.TRUE, HttpStatus.OK, Constant.SUCCESS));
+        return ResponseEntity.ok().body(new ResponseJson<>(Boolean.TRUE, HttpStatus.OK, Constant.ADD_USER_SUCCESS));
     }
 
 }

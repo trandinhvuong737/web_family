@@ -1,6 +1,5 @@
 package deepstream.ttrack.service;
 
-
 import deepstream.ttrack.common.enums.Status;
 import deepstream.ttrack.common.utils.WebUtils;
 import deepstream.ttrack.dto.DateRangeDto;
@@ -19,8 +18,8 @@ import deepstream.ttrack.repository.OrderRepository;
 import deepstream.ttrack.repository.ProductRepository;
 import deepstream.ttrack.repository.UserRepository;
 import deepstream.ttrack.mapper.OrderMapper;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.stereotype.Service;
-
 
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -154,7 +153,14 @@ public class OrderServiceIml implements OrderService {
 
     @Override
     public List<OrderResponseDto> getAllOrderByFilter(DateRangeDto dateRangeDto) {
-        List<Order> orders = orderRepository.getOrderByDateRange(dateRangeDto.getStartDate(), dateRangeDto.getEndDate());
+        LocalDate startDate = dateRangeDto.getStartDate();
+        LocalDate endDate = dateRangeDto.getEndDate();
+
+        if(ObjectUtils.isEmpty(startDate) || ObjectUtils.isEmpty(endDate) ){
+            throw new BadRequestException(
+                    new SysError(Errors.DATE_RANGE_NULL, new ErrorParam(Errors.DATE_RANGE)));
+        }
+        List<Order> orders = orderRepository.getOrderByDateRange(startDate, endDate);
         List<OrderResponseDto> orderResponse = new ArrayList<>();
         orders.stream()
                 .map(OrderMapper.INSTANCE::orderToOrderResponseDto)
