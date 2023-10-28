@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -31,7 +32,13 @@ public class ExcelServiceIml implements ExcelService{
 
     @Override
     public void exportToExcel(HttpServletResponse response, DateRangeDto dateRangeDto) throws IOException {
-        List<Order> orders = orderRepository.getOrdersByStatus(dateRangeDto.getStartDate(),dateRangeDto.getEndDate());
+
+        ZoneId zoneId = ZoneId.of("Asia/Ho_Chi_Minh");
+        // Create a ZonedDateTime with the LocalDate and time zone
+        LocalDate startDate = dateRangeDto.getStartDate().atStartOfDay(zoneId).toLocalDate();
+        LocalDate endDate = dateRangeDto.getStartDate().atStartOfDay(zoneId).toLocalDate();
+
+        List<Order> orders = orderRepository.getOrdersByStatus(startDate,endDate);
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Sheet 1");
 
@@ -73,7 +80,13 @@ public class ExcelServiceIml implements ExcelService{
 
     @Override
     public void exportToExcelVnPost(HttpServletResponse response, DateRangeDto dateRangeDto) throws IOException {
-        List<Order> orders = orderRepository.getOrdersByStatus(dateRangeDto.getStartDate(),dateRangeDto.getEndDate());
+
+        ZoneId zoneId = ZoneId.of("Asia/Ho_Chi_Minh");
+        // Create a ZonedDateTime with the LocalDate and time zone
+        LocalDate startDate = dateRangeDto.getStartDate().atStartOfDay(zoneId).toLocalDate();
+        LocalDate endDate = dateRangeDto.getStartDate().atStartOfDay(zoneId).toLocalDate();
+
+        List<Order> orders = orderRepository.getOrdersByStatus(startDate,endDate);
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Sheet 1");
 

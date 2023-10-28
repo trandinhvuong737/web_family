@@ -166,8 +166,10 @@ public class OrderServiceIml implements OrderService {
 
     @Override
     public List<OrderResponseDto> getAllOrderByFilter(DateRangeDto dateRangeDto) {
-        LocalDate startDate = dateRangeDto.getStartDate();
-        LocalDate endDate = dateRangeDto.getEndDate();
+        ZoneId zoneId = ZoneId.of("Asia/Ho_Chi_Minh");
+        // Create a ZonedDateTime with the LocalDate and time zone
+        LocalDate startDate = dateRangeDto.getStartDate().atStartOfDay(zoneId).toLocalDate();
+        LocalDate endDate = dateRangeDto.getStartDate().atStartOfDay(zoneId).toLocalDate();
 
         if (ObjectUtils.isEmpty(startDate) || ObjectUtils.isEmpty(endDate)) {
             throw new BadRequestException(
