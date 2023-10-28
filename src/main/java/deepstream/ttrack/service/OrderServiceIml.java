@@ -153,7 +153,7 @@ public class OrderServiceIml implements OrderService {
     public List<ChartOverviewDto> getChartOverview() {
         List<ChartOverviewDto> chartOverviews = new ArrayList<>();
         LocalDate date = LocalDate.now(ZoneId.of(ASIA_HO_CHI_MINH));
-        for (int i = 0; i <= 7; i++) {
+        for (int i = 6; i >= 0; i--) {
             ChartOverviewDto overviewDto = new ChartOverviewDto();
             LocalDate minusDays = date.minusDays(i);
             int totalOrder = orderRepository.countOrder(minusDays);
