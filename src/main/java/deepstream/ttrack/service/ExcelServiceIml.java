@@ -21,7 +21,6 @@ public class ExcelServiceIml implements ExcelService{
 
     public static final String ASIA_HO_CHI_MINH = "Asia/Ho_Chi_Minh";
     private final OrderRepository orderRepository;
-
     private final ProductRepository productRepository;
 
     public ExcelServiceIml(OrderRepository orderRepository, ProductRepository productRepository) {
@@ -35,9 +34,8 @@ public class ExcelServiceIml implements ExcelService{
 
         ZoneId zoneId = ZoneId.of(ASIA_HO_CHI_MINH);
         // Create a ZonedDateTime with the LocalDate and time zone
-        LocalDate startDate = dateRangeDto.getStartDate().atStartOfDay(zoneId).toLocalDate();
-        LocalDate endDate = dateRangeDto.getEndDate().atStartOfDay(zoneId).toLocalDate();
-
+        LocalDate startDate = dateRangeDto.getStartDate().atStartOfDay(zoneId).toLocalDate().plusDays(1);
+        LocalDate endDate = dateRangeDto.getEndDate().atStartOfDay(zoneId).toLocalDate().plusDays(1);
         List<Order> orders = orderRepository.getOrdersByStatus(startDate,endDate);
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Sheet 1");
