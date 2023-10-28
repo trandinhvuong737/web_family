@@ -16,4 +16,6 @@ public class ProductRequestDto {
     private Long unitPrice;
 
     private Integer weight;
+
+    private Long transportFee;
 }

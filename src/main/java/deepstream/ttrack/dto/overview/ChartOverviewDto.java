@@ -10,4 +10,6 @@ import java.time.LocalDate;
 public class ChartOverviewDto {
     private LocalDate date;
     private Integer totalOrder;
+    private Integer totalProduct;
+    private Long totalTransportFee;
 }

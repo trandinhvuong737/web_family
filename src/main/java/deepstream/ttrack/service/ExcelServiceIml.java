@@ -36,7 +36,7 @@ public class ExcelServiceIml implements ExcelService{
         // Create a ZonedDateTime with the LocalDate and time zone
         LocalDate startDate = dateRangeDto.getStartDate().atStartOfDay(zoneId).toLocalDate().plusDays(1);
         LocalDate endDate = dateRangeDto.getEndDate().atStartOfDay(zoneId).toLocalDate().plusDays(1);
-        List<Order> orders = orderRepository.getOrdersByStatus(startDate,endDate);
+        List<Order> orders = orderRepository.getOrdersByStatusEx(startDate,endDate);
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Sheet 1");
 
@@ -48,6 +48,8 @@ public class ExcelServiceIml implements ExcelService{
         headerRow.createCell(4).setCellValue("Số Lượng");
         headerRow.createCell(5).setCellValue("Khối Lượng(gram)");
         headerRow.createCell(6).setCellValue("LCOD");
+        headerRow.createCell(7).setCellValue("Phí Vận Chuyển (VNĐ)");
+
         int i = 1;
         for (Order order:orders
              ) {
@@ -60,11 +62,13 @@ public class ExcelServiceIml implements ExcelService{
             dataRow.createCell(3).setCellValue(order.getProduct());
             dataRow.createCell(4).setCellValue(order.getQuantity());
             dataRow.createCell(5).setCellValue(product.getWeight());
-            dataRow.createCell(6).setCellValue(product.getWeight() * 2000 * order.getQuantity());
+            dataRow.createCell(6).setCellValue(product.getUnitPrice() * order.getQuantity());
+            dataRow.createCell(7).setCellValue(order.getQuantity() * product.getTransportFee());
+
             i+=1;
         }
 
-        for (int j=0; j<=6; j++){
+        for (int j=0; j<=7; j++){
             headerStyle(workbook, headerRow, j);
             sheet.autoSizeColumn(j);
         }
@@ -84,7 +88,7 @@ public class ExcelServiceIml implements ExcelService{
         LocalDate startDate = dateRangeDto.getStartDate().atStartOfDay(zoneId).toLocalDate();
         LocalDate endDate = dateRangeDto.getEndDate().atStartOfDay(zoneId).toLocalDate();
 
-        List<Order> orders = orderRepository.getOrdersByStatus(startDate,endDate);
+        List<Order> orders = orderRepository.getOrdersByStatusEx(startDate,endDate);
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Sheet 1");
 
@@ -100,6 +104,8 @@ public class ExcelServiceIml implements ExcelService{
         headerRow.createCell(8).setCellValue("CHỈ DẪN PHÁT");
         headerRow.createCell(9).setCellValue("NỘI DUNG");
         headerRow.createCell(10).setCellValue("TIỀN THU HỘ - COD (VNĐ)");
+        headerRow.createCell(11).setCellValue("Phí Vận Chuyển (VNĐ)");
+
 
         int i = 1;
         for (Order order:orders
@@ -117,11 +123,13 @@ public class ExcelServiceIml implements ExcelService{
             dataRow.createCell(7).setCellValue(order.getQuantity());
             dataRow.createCell(8).setCellValue("Cho xem hàng.có vde gọi hotline:086561027");
             dataRow.createCell(9).setCellValue(order.getProduct());
-            dataRow.createCell(10).setCellValue(product.getWeight() * 2000 * order.getQuantity());
+            dataRow.createCell(10).setCellValue(product.getUnitPrice() * order.getQuantity());
+            dataRow.createCell(11).setCellValue(order.getQuantity() * product.getTransportFee());
+
             i+=1;
         }
 
-        for (int j=0; j<=10; j++){
+        for (int j=0; j<=11; j++){
             headerStyle(workbook, headerRow, j);
             sheet.autoSizeColumn(j);
         }
