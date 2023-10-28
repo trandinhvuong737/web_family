@@ -13,6 +13,9 @@ public class Errors {
     public static final String ERROR_ORDER_NOT_FOUND = "Order-not-found";
     public static final String ERROR_ROLE_NOT_FOUND = "role-not-found";
     public static final String ERROR_STATUS_FALSE = "error-status-false";
+    public static final String PRODUCT_DOES_NOT_EXIST = "product-does-not-exist";
+    public static final String PRODUCT_NAME = "product name";
+
     public static final String DATE_RANGE_NULL = "date-range-null";
     public static final String NOT_FOUND = "not-found";
     public static final String ERROR_EMAIL_NOT_FOUND = "email-not-found";

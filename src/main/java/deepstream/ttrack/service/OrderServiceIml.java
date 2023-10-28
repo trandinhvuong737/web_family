@@ -45,10 +45,18 @@ public class OrderServiceIml implements OrderService {
                 () -> new BadRequestException(
                         new SysError(Errors.ERROR_USER_NOT_FOUND, new ErrorParam(Errors.USERNAME)))
         );
-        if(!Status.getDisplayNames().contains(orderRequest.getStatus())){
+
+        if (!Status.getDisplayNames().contains(orderRequest.getStatus())) {
             throw new BadRequestException(
                     new SysError(Errors.ERROR_STATUS_FALSE, new ErrorParam(Errors.STATUS)));
         }
+
+        List<String> productName = productRepository.findAllProductName();
+        if (!productName.contains(orderRequest.getProduct())) {
+            throw new BadRequestException(
+                    new SysError(Errors.PRODUCT_DOES_NOT_EXIST, new ErrorParam(Errors.PRODUCT_NAME)));
+        }
+
         Order order = new Order();
         order.setUser(user);
         order.setAddress(orderRequest.getAddress());
@@ -67,6 +75,11 @@ public class OrderServiceIml implements OrderService {
                 () -> new BadRequestException(
                         new SysError(Errors.ERROR_ORDER_NOT_FOUND, new ErrorParam(Errors.ORDER_ID)))
         );
+        List<String> productName = productRepository.findAllProductName();
+        if (!productName.contains(orderRequest.getProduct())) {
+            throw new BadRequestException(
+                    new SysError(Errors.PRODUCT_DOES_NOT_EXIST, new ErrorParam(Errors.PRODUCT_NAME)));
+        }
         order.setAddress(orderRequest.getAddress());
         order.setCustomer(orderRequest.getCustomer());
         order.setProduct(orderRequest.getProduct());
@@ -120,9 +133,9 @@ public class OrderServiceIml implements OrderService {
         int totalProduct = 0;
         int totalOrder;
         long totalAmount = 0;
-        List<Order> orders = orderRepository.getOrderByDateRange(dateRange.getStartDate(),dateRange.getEndDate());
-        for (Order order:orders
-             ) {
+        List<Order> orders = orderRepository.getOrderByDateRange(dateRange.getStartDate(), dateRange.getEndDate());
+        for (Order order : orders
+        ) {
             Product product = productRepository.getProductByProductName(order.getProduct());
             totalProduct += (int) order.getQuantity();
             totalAmount += (long) (order.getQuantity() * product.getUnitPrice());
@@ -138,11 +151,11 @@ public class OrderServiceIml implements OrderService {
     public List<ChartOverviewDto> getChartOverview() {
         List<ChartOverviewDto> chartOverviews = new ArrayList<>();
         LocalDate date = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));
-        for(int i = 0; i<=7; i++){
+        for (int i = 0; i <= 7; i++) {
             ChartOverviewDto overviewDto = new ChartOverviewDto();
             LocalDate minusDays = date.minusDays(i);
             int totalOrder = orderRepository.countOrder(minusDays);
-            if(totalOrder > 0){
+            if (totalOrder > 0) {
                 overviewDto.setDate(minusDays);
                 overviewDto.setTotalOrder(totalOrder);
                 chartOverviews.add(overviewDto);
@@ -156,7 +169,7 @@ public class OrderServiceIml implements OrderService {
         LocalDate startDate = dateRangeDto.getStartDate();
         LocalDate endDate = dateRangeDto.getEndDate();
 
-        if(ObjectUtils.isEmpty(startDate) || ObjectUtils.isEmpty(endDate) ){
+        if (ObjectUtils.isEmpty(startDate) || ObjectUtils.isEmpty(endDate)) {
             throw new BadRequestException(
                     new SysError(Errors.DATE_RANGE_NULL, new ErrorParam(Errors.DATE_RANGE)));
         }
