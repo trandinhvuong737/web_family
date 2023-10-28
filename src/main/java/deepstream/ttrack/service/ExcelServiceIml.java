@@ -1,5 +1,6 @@
 package deepstream.ttrack.service;
 
+import deepstream.ttrack.dto.DateRangeDto;
 import deepstream.ttrack.entity.Order;
 import deepstream.ttrack.entity.Product;
 import deepstream.ttrack.repository.OrderRepository;
@@ -29,8 +30,8 @@ public class ExcelServiceIml implements ExcelService{
 
 
     @Override
-    public void exportToExcel(HttpServletResponse response) throws IOException {
-        List<Order> orders = orderRepository.getOrdersByStatus();
+    public void exportToExcel(HttpServletResponse response, DateRangeDto dateRangeDto) throws IOException {
+        List<Order> orders = orderRepository.getOrdersByStatus(dateRangeDto.getStartDate(),dateRangeDto.getEndDate());
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Sheet 1");
 
@@ -67,12 +68,12 @@ public class ExcelServiceIml implements ExcelService{
         response.setHeader("Content-Disposition", "attachment; filename=data.xlsx");
 
         workbook.write(response.getOutputStream());
-        workbook.close();
+        response.flushBuffer();
     }
 
     @Override
-    public void exportToExcelVnPost(HttpServletResponse response) throws IOException {
-        List<Order> orders = orderRepository.getOrdersByStatus();
+    public void exportToExcelVnPost(HttpServletResponse response, DateRangeDto dateRangeDto) throws IOException {
+        List<Order> orders = orderRepository.getOrdersByStatus(dateRangeDto.getStartDate(),dateRangeDto.getEndDate());
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Sheet 1");
 
@@ -115,14 +116,15 @@ public class ExcelServiceIml implements ExcelService{
         }
 
         LocalDate date = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyy");
         String formattedDate = date.format(formatter);
         String filename = "attachment; filename=data".concat(formattedDate).concat(".xlsx");
+
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setHeader("Content-Disposition", filename);
 
         workbook.write(response.getOutputStream());
-        workbook.close();
+        response.flushBuffer();
     }
 
     private static void headerStyle(Workbook workbook, Row headerRow, int index) {
