@@ -28,6 +28,7 @@ import java.util.List;
 
 @Service
 public class OrderServiceIml implements OrderService {
+
     public static final String ASIA_HO_CHI_MINH = "Asia/Ho_Chi_Minh";
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
@@ -151,7 +152,7 @@ public class OrderServiceIml implements OrderService {
     @Override
     public List<ChartOverviewDto> getChartOverview() {
         List<ChartOverviewDto> chartOverviews = new ArrayList<>();
-        LocalDate date = LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh"));
+        LocalDate date = LocalDate.now(ZoneId.of(ASIA_HO_CHI_MINH));
         for (int i = 0; i <= 7; i++) {
             ChartOverviewDto overviewDto = new ChartOverviewDto();
             LocalDate minusDays = date.minusDays(i);
@@ -167,10 +168,10 @@ public class OrderServiceIml implements OrderService {
 
     @Override
     public List<OrderResponseDto> getAllOrderByFilter(DateRangeDto dateRangeDto) {
-        ZoneId zoneId = ZoneId.of("Asia/Ho_Chi_Minh");
+        ZoneId zoneId = ZoneId.of(ASIA_HO_CHI_MINH);
         // Create a ZonedDateTime with the LocalDate and time zone
         LocalDate startDate = dateRangeDto.getStartDate().atStartOfDay(zoneId).toLocalDate();
-        LocalDate endDate = dateRangeDto.getStartDate().atStartOfDay(zoneId).toLocalDate();
+        LocalDate endDate = dateRangeDto.getEndDate().atStartOfDay(zoneId).toLocalDate();
 
         if (ObjectUtils.isEmpty(startDate) || ObjectUtils.isEmpty(endDate)) {
             throw new BadRequestException(
