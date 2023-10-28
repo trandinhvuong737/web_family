@@ -8,6 +8,6 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DateRangeDto {
-    private LocalDate startDate = LocalDate.now();
-    private LocalDate endDate = LocalDate.now();
+    private LocalDate startDate;
+    private LocalDate endDate;
 }
