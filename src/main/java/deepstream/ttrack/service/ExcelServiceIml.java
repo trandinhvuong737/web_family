@@ -13,13 +13,13 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
 public class ExcelServiceIml implements ExcelService{
 
+    public static final String ASIA_HO_CHI_MINH = "Asia/Ho_Chi_Minh";
     private final OrderRepository orderRepository;
 
     private final ProductRepository productRepository;
@@ -33,7 +33,7 @@ public class ExcelServiceIml implements ExcelService{
     @Override
     public void exportToExcel(HttpServletResponse response, DateRangeDto dateRangeDto) throws IOException {
 
-        ZoneId zoneId = ZoneId.of("Asia/Ho_Chi_Minh");
+        ZoneId zoneId = ZoneId.of(ASIA_HO_CHI_MINH);
         // Create a ZonedDateTime with the LocalDate and time zone
         LocalDate startDate = dateRangeDto.getStartDate().atStartOfDay(zoneId).toLocalDate();
         LocalDate endDate = dateRangeDto.getStartDate().atStartOfDay(zoneId).toLocalDate();

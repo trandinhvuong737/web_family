@@ -28,6 +28,7 @@ import java.util.List;
 
 @Service
 public class OrderServiceIml implements OrderService {
+    public static final String ASIA_HO_CHI_MINH = "Asia/Ho_Chi_Minh";
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
@@ -62,7 +63,7 @@ public class OrderServiceIml implements OrderService {
         order.setAddress(orderRequest.getAddress());
         order.setCustomer(orderRequest.getCustomer());
         order.setProduct(orderRequest.getProduct());
-        order.setCreateAt(LocalDate.now(ZoneId.of("Asia/Ho_Chi_Minh")));
+        order.setCreateAt(LocalDate.now(ZoneId.of(ASIA_HO_CHI_MINH)));
         order.setPhoneNumber(orderRequest.getPhoneNumber());
         order.setQuantity(orderRequest.getQuantity());
         order.setStatus(orderRequest.getStatus());
