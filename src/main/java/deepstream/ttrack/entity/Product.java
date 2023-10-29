@@ -25,4 +25,7 @@ public class Product {
 
     @Column(name = "weight")
     private int weight;
+
+    @Column(name = "transport_fee")
+    private long transportFee;
 }

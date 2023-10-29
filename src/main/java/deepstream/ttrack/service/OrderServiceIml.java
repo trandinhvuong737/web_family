@@ -135,17 +135,22 @@ public class OrderServiceIml implements OrderService {
         int totalProduct = 0;
         int totalOrder;
         long totalAmount = 0;
+        long totalTransportFee = 0L;
+
         List<Order> orders = orderRepository.getOrderByDateRange(dateRange.getStartDate(), dateRange.getEndDate());
         for (Order order : orders
         ) {
             Product product = productRepository.getProductByProductName(order.getProduct());
             totalProduct += (int) order.getQuantity();
             totalAmount += (long) (order.getQuantity() * product.getUnitPrice());
+            totalTransportFee += (long) order.getQuantity() * product.getTransportFee();
         }
         totalOrder = orders.size();
         overview.setTotalOrder(totalOrder);
         overview.setTotalProduct(totalProduct);
         overview.setTotalAmount(totalAmount);
+        overview.setTotalTransportFee(totalTransportFee);
+
         return overview;
     }
 
@@ -157,9 +162,20 @@ public class OrderServiceIml implements OrderService {
             ChartOverviewDto overviewDto = new ChartOverviewDto();
             LocalDate minusDays = date.minusDays(i);
             int totalOrder = orderRepository.countOrder(minusDays);
+            int totalProduct = orderRepository.sumProduct(minusDays);
+            long totalTransportFee = 0L;
+            List<Order> orders = orderRepository.getOrderByDate(minusDays);
+            for (Order order:orders
+                 ) {
+                Product product = productRepository.getProductByProductName(order.getProduct());
+                totalTransportFee += (long) order.getQuantity() * product.getTransportFee();
+            }
+
             if (totalOrder > 0) {
                 overviewDto.setDate(minusDays);
                 overviewDto.setTotalOrder(totalOrder);
+                overviewDto.setTotalProduct(totalProduct);
+                overviewDto.setTotalTransportFee(totalTransportFee);
                 chartOverviews.add(overviewDto);
             }
         }

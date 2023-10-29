@@ -55,6 +55,8 @@ public class ProductServiceIml implements ProductService{
         product.setProductName(productRequestDto.getProductName());
         product.setUnitPrice(productRequestDto.getUnitPrice());
         product.setWeight(productRequestDto.getWeight());
+        product.setTransportFee(productRequestDto.getTransportFee());
+
         productRepository.save(product);
     }
 
@@ -73,6 +75,8 @@ public class ProductServiceIml implements ProductService{
         product.setProductName(productRequestDto.getProductName());
         product.setUnitPrice(productRequestDto.getUnitPrice());
         product.setWeight(productRequestDto.getWeight());
+        product.setTransportFee(productRequestDto.getTransportFee());
+
         productRepository.save(product);
     }
 }
