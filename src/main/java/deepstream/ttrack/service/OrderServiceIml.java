@@ -164,7 +164,7 @@ public class OrderServiceIml implements OrderService {
             ChartOverviewDto overviewDto = new ChartOverviewDto();
             LocalDate minusDays = date.minusDays(i);
             int totalOrder = orderRepository.countOrder(minusDays);
-            int totalProduct = orderRepository.sumProduct(minusDays);
+            Integer totalProduct = orderRepository.sumProduct(minusDays);
             long totalTransportFee = 0L;
             List<Order> orders = orderRepository.getOrderByDate(minusDays);
             for (Order order:orders
