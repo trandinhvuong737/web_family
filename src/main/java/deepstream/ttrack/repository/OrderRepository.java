@@ -24,7 +24,7 @@ public interface OrderRepository extends JpaRepository<Order,Integer> {
     int countOrder(LocalDate date);
 
     @Query("SELECT sum (o.quantity) FROM Order o WHERE o.createAt = :date" + " and o.status = 'completed'")
-    int sumProduct(LocalDate date);
+    Integer sumProduct(LocalDate date);
 
     @Query("SELECT o FROM Order o WHERE o.status = 'pending' and o.createAt between :startDate and :endDate")
     List<Order> getOrdersByStatusEx(LocalDate startDate, LocalDate endDate);
