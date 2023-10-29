@@ -49,6 +49,8 @@ public class ExcelServiceIml implements ExcelService{
         headerRow.createCell(5).setCellValue("Khối Lượng(gram)");
         headerRow.createCell(6).setCellValue("LCOD");
         headerRow.createCell(7).setCellValue("Phí Vận Chuyển (VNĐ)");
+        headerRow.createCell(8).setCellValue("Mã Giảm Giá");
+
 
         int i = 1;
         for (Order order:orders
@@ -64,11 +66,12 @@ public class ExcelServiceIml implements ExcelService{
             dataRow.createCell(5).setCellValue(product.getWeight());
             dataRow.createCell(6).setCellValue(product.getUnitPrice() * order.getQuantity());
             dataRow.createCell(7).setCellValue(order.getQuantity() * product.getTransportFee());
+            dataRow.createCell(5).setCellValue(order.getDiscountCode());
 
             i+=1;
         }
 
-        for (int j=0; j<=7; j++){
+        for (int j=0; j<=8; j++){
             headerStyle(workbook, headerRow, j);
             sheet.autoSizeColumn(j);
         }
@@ -105,7 +108,7 @@ public class ExcelServiceIml implements ExcelService{
         headerRow.createCell(9).setCellValue("NỘI DUNG");
         headerRow.createCell(10).setCellValue("TIỀN THU HỘ - COD (VNĐ)");
         headerRow.createCell(11).setCellValue("Phí Vận Chuyển (VNĐ)");
-
+        headerRow.createCell(12).setCellValue("Mã Giảm Giá");
 
         int i = 1;
         for (Order order:orders
@@ -125,11 +128,12 @@ public class ExcelServiceIml implements ExcelService{
             dataRow.createCell(9).setCellValue(order.getProduct());
             dataRow.createCell(10).setCellValue(product.getUnitPrice() * order.getQuantity());
             dataRow.createCell(11).setCellValue(order.getQuantity() * product.getTransportFee());
+            dataRow.createCell(12).setCellValue(order.getDiscountCode());
 
             i+=1;
         }
 
-        for (int j=0; j<=11; j++){
+        for (int j=0; j<=12; j++){
             headerStyle(workbook, headerRow, j);
             sheet.autoSizeColumn(j);
         }

@@ -24,4 +24,6 @@ public class OrderResponseDto {
     private Integer quantity;
 
     private String status;
+
+    private String discountCode;
 }
