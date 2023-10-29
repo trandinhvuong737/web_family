@@ -17,5 +17,7 @@ public class OrderRequestDto {
 
     private Integer quantity;
 
+    private String discountCode;
+
     private String status = "pending";
 }

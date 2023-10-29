@@ -68,6 +68,7 @@ public class OrderServiceIml implements OrderService {
         order.setPhoneNumber(orderRequest.getPhoneNumber());
         order.setQuantity(orderRequest.getQuantity());
         order.setStatus(orderRequest.getStatus());
+        order.setDiscountCode(orderRequest.getDiscountCode());
         orderRepository.save(order);
     }
 
@@ -88,6 +89,7 @@ public class OrderServiceIml implements OrderService {
         order.setPhoneNumber(orderRequest.getPhoneNumber());
         order.setQuantity(orderRequest.getQuantity());
         order.setStatus(orderRequest.getStatus());
+        order.setDiscountCode(orderRequest.getDiscountCode());
         orderRepository.save(order);
     }
 

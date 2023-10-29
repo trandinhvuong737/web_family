@@ -39,6 +39,9 @@ public class Order {
     @Column(name = "status")
     private String status;
 
+    @Column(name = "discount_code")
+    private String discountCode;
+
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
