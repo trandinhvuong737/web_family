@@ -18,4 +18,7 @@ public class ProductResponseDto {
     private Long unitPrice;
 
     private Integer weight;
+
+    private Long transportFee;
+
 }
