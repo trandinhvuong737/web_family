@@ -13,4 +13,6 @@ public interface ProductRepository extends JpaRepository<Product,Integer> {
     Product getProductByProductName(String product);
     @Query("SELECT p.productName FROM Product p")
     List<String> findAllProductName();
+    @Query("SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END FROM Product p WHERE p.productName = :productName")
+    boolean checkProductName(String productName);
 }

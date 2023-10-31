@@ -13,8 +13,6 @@ public class OrderRequestDto {
 
     private String phoneNumber;
 
-    private String product;
-
     private Integer quantity;
 
     private String discountCode;

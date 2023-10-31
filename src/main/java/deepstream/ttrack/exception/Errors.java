@@ -14,13 +14,15 @@ public class Errors {
     public static final String ERROR_ROLE_NOT_FOUND = "role-not-found";
     public static final String ERROR_STATUS_FALSE = "error-status-false";
     public static final String PRODUCT_DOES_NOT_EXIST = "product-does-not-exist";
-    public static final String PRODUCT_NAME = "product name";
+    public static final String PRODUCT_ALREADY_EXISTS = "product already exists";
 
+    public static final String PRODUCT_NAME = "product name";
     public static final String DATE_RANGE_NULL = "date-range-null";
     public static final String NOT_FOUND = "not-found";
     public static final String ERROR_EMAIL_NOT_FOUND = "email-not-found";
     public static final String ERROR_USER_NAME_OR_PASSWORD_NOT_FOUND = "user-name-or-password-not-found";
     public static final String USERNAME = "username";
+    public static final String PHONE_NUMBER = "phoneNumber";
     public static final String ID = "id";
     public static final String ORDER_ID = "order-id";
     public static final String ROLE_ID = "role-id";
@@ -28,6 +30,7 @@ public class Errors {
     public static final String DATE_RANGE = "Date range";
     public static final String EMAIL = "email";
     public static final String ROLE = "role";
+    public static final String PRODUCT = "product";
     public static final String USER = "user";
     public static final String PRODUCT_ID = "product-id";
     public static final String UNIT_PRICE = "unit price";

@@ -7,12 +7,14 @@ import deepstream.ttrack.dto.JwtResponse;
 import deepstream.ttrack.dto.LoginRequest;
 import deepstream.ttrack.dto.ResponseJson;
 import deepstream.ttrack.dto.SignupRequest;
+import deepstream.ttrack.entity.Product;
 import deepstream.ttrack.entity.Role;
 import deepstream.ttrack.entity.User;
 import deepstream.ttrack.exception.BadRequestException;
 import deepstream.ttrack.exception.ErrorParam;
 import deepstream.ttrack.exception.Errors;
 import deepstream.ttrack.exception.SysError;
+import deepstream.ttrack.repository.ProductRepository;
 import deepstream.ttrack.repository.RoleRepository;
 import deepstream.ttrack.repository.UserRepository;
 import deepstream.ttrack.service.UserService;
@@ -41,6 +43,8 @@ public class AuthController {
     private final RoleRepository roleRepository;
 
     private final UserRepository userRepository;
+
+    private final ProductRepository productRepository;
 
     private final JwtUtils jwtUtils;
 
@@ -87,8 +91,10 @@ public class AuthController {
         }
 
         Role role = roleRepository.findById(signupRequest.getRoleId()).orElseThrow(
-                () -> new BadRequestException(new SysError(Errors.ERROR_EMAIL_NOT_FOUND, new ErrorParam(Errors.ROLE))));
+                () -> new BadRequestException(new SysError(Errors.NOT_FOUND, new ErrorParam(Errors.ROLE))));
 
+        Product product =productRepository.findById(signupRequest.getProductId()).orElseThrow(
+                () -> new BadRequestException(new SysError(Errors.NOT_FOUND, new ErrorParam(Errors.PRODUCT))));
 
         User user =  User.builder()
             .username(signupRequest.getUsername())
@@ -96,6 +102,7 @@ public class AuthController {
             .createDate(LocalDateTime.now())
             .status(Constant.ACTIVE)
             .role(role)
+            .product(product)
             .password(encoder.encode(signupRequest.getPassword()))
             .build();
 
