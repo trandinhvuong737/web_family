@@ -32,5 +32,8 @@ public class SignupRequest {
     @NotBlank(message = "Role is required.")
     private int roleId;
 
+    @NotBlank(message = "productId is required.")
+    private int productId;
+
 }
 

@@ -1,10 +1,12 @@
 package deepstream.ttrack.service;
 
 import deepstream.ttrack.dto.DateRangeDto;
+import deepstream.ttrack.dto.ResponseJson;
 import deepstream.ttrack.dto.order.OrderRequestDto;
 import deepstream.ttrack.dto.order.OrderResponseDto;
 import deepstream.ttrack.dto.overview.ChartOverviewDto;
 import deepstream.ttrack.dto.overview.OverviewDto;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 
@@ -25,4 +27,6 @@ public interface OrderService {
     List<ChartOverviewDto> getChartOverview();
 
     List<OrderResponseDto> getAllOrderByFilter(DateRangeDto dateRangeDto);
+
+    ResponseJson<OrderResponseDto> checkOrder(String phoneNumber);
 }

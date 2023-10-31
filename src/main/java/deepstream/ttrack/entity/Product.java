@@ -21,11 +21,11 @@ public class Product {
     private String productName;
 
     @Column(name = "unit_price")
-    private long unitPrice;
+    private Long unitPrice;
 
     @Column(name = "weight")
-    private int weight;
+    private Integer weight;
 
     @Column(name = "transport_fee")
-    private long transportFee;
+    private Long transportFee;
 }

@@ -1,55 +1,61 @@
 CREATE TABLE public.role
 (
-    role_id         serial    NOT NULL,
-    role_name       varchar    NULL ,
-    description     text       NULL ,
+    role_id     serial  NOT NULL,
+    role_name   varchar NULL,
+    description text    NULL,
     CONSTRAINT role_pk PRIMARY KEY (role_id)
+);
+
+CREATE TABLE public.product
+(
+    product_id    serial  NOT NULL,
+    product_name  varchar NULL,
+    unit_price    bigint  NULL,
+    weight        int     NULL,
+    transport_fee bigint  null,
+    CONSTRAINT product_pk PRIMARY KEY (product_id)
 );
 
 CREATE TABLE public.users
 (
-    user_id      serial    NOT NULL,
+    user_id     serial  NOT NULL,
     username    varchar NULL,
     email       varchar NULL,
     "password"  varchar NULL,
     status      varchar NULL,
     create_date date    NULL,
-    role_id     INT NULL ,
+    role_id     INT     NULL,
+    product_id  int     NULL,
     CONSTRAINT users_pk PRIMARY KEY (user_id),
-    CONSTRAINT users_role_id_fk FOREIGN KEY (role_id) REFERENCES public.role (role_id)
+    CONSTRAINT users_role_id_fk FOREIGN KEY (role_id) REFERENCES public.role (role_id),
+    CONSTRAINT product_use_id_fk FOREIGN KEY (product_id) REFERENCES public.product (product_id)
+
 );
 
 
 CREATE TABLE public.orders
 (
-    order_id      serial    NOT NULL ,
-    user_id        int    NOT NULL ,
-    create_at     timestamp NOT NULL ,
-    customer      varchar NULL ,
-    address       varchar NULL ,
-    phone_number  varchar NULL ,
-    product       varchar NOT NULL ,
-    quantity      int NOT NULL ,
-    status        varchar NULL ,
+    order_id      serial    NOT NULL,
+    user_id       int       NOT NULL,
+    create_at     timestamp NOT NULL,
+    customer      varchar   NULL,
+    address       varchar   NULL,
+    phone_number  varchar   NULL,
+    product       varchar   NOT NULL,
+    quantity      int       NOT NULL,
+    status        varchar   NULL,
+    discount_code varchar   null,
     CONSTRAINT oder_pk PRIMARY KEY (order_id),
     CONSTRAINT oder_use_id_fk FOREIGN KEY (user_id) REFERENCES public.users (user_id)
 );
 
-CREATE TABLE public.product
-(
-    product_id serial NOT NULL ,
-    product_name varchar NULL ,
-    unit_price bigint NULL ,
-    weight int NULL ,
-    CONSTRAINT product_pk PRIMARY KEY (product_id)
-);
 
 CREATE TABLE IF NOT EXISTS public.privileges
 (
-    privilege_id          serial NOT NULL ,
-    name        varchar(255),
-    description TEXT,
-    screen_key  varchar(255),
+    privilege_id serial NOT NULL,
+    name         varchar(255),
+    description  TEXT,
+    screen_key   varchar(255),
     CONSTRAINT privileges_pk PRIMARY KEY (privilege_id)
 );
 

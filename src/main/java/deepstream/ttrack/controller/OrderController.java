@@ -79,4 +79,13 @@ public class OrderController {
                 new ResponseJson<>(true, HttpStatus.OK, Constant.UPDATE_STATUS_ORDER_SUCCESS));
 
     }
+
+    @GetMapping("/check-order/{phone}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ResponseJson<OrderResponseDto>> checkOrder(
+            @PathVariable String phone) {
+        ResponseJson<OrderResponseDto> orderResponse = orderService.checkOrder(phone);
+        return ResponseEntity.ok().body(orderResponse);
+
+    }
 }

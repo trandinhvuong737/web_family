@@ -10,4 +10,5 @@ public class UserUpdate {
     private String email;
     private String password;
     private int roleId;
+    private int productId;
 }

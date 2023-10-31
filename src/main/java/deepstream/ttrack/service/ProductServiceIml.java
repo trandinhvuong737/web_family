@@ -71,6 +71,11 @@ public class ProductServiceIml implements ProductService{
 
     @Override
     public void addNewProduct(ProductRequestDto productRequestDto) {
+        boolean check = productRepository.checkProductName(productRequestDto.getProductName());
+        if(check){
+            throw new BadRequestException(
+                    new SysError(Errors.PRODUCT_ALREADY_EXISTS, new ErrorParam(Errors.PRODUCT_NAME)));
+        }
         Product product = new Product();
         product.setProductName(productRequestDto.getProductName());
         product.setUnitPrice(productRequestDto.getUnitPrice());

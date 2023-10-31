@@ -42,6 +42,10 @@ public class User {
     private LocalDateTime createDate;
 
     @ManyToOne
+    @JoinColumn(name = "product_id")
+    private Product product;
+
+    @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
 
