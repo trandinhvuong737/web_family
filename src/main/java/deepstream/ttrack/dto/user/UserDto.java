@@ -16,5 +16,6 @@ public class UserDto {
     private String password;
     private Integer roleId;
     private String roleName;
+    private Integer productId;
     private String productName;
 }
