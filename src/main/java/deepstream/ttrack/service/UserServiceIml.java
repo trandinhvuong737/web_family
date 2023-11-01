@@ -60,6 +60,7 @@ public class UserServiceIml implements UserService {
             userDto.setRoleId(user.getRole().getRoleId());
             userDto.setRoleName(user.getRole().getName());
             userDto.setProductName(user.getProduct().getProductName());
+            userDto.setProductId(user.getProduct().getProductId());
             userDtos.add(userDto);
         }
         return userDtos;
