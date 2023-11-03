@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Service
 public class AddressServiceIml implements AddressService {
     public static final String API_DEPTH_3 = "https://provinces.open-api.vn/api/?depth=3";
-    public static final String LIST_NULL = "List null";
+    public static final String LIST_NULL = "Danh sách rỗng";
     private final WebClient webClient;
 
     public AddressServiceIml() {

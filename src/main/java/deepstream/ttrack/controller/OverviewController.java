@@ -22,10 +22,10 @@ public class OverviewController {
 
     @PostMapping("/get")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ResponseJson<OverviewDto>> createDevice(@RequestBody DateRangeDto dateRange) {
+    public ResponseEntity<ResponseJson<OverviewDto>> createOrderOverview(@RequestBody DateRangeDto dateRange) {
         OverviewDto overviewDto = orderService.getOverview(dateRange);
         return ResponseEntity.ok().body(
-                new ResponseJson<>(overviewDto, HttpStatus.OK, Constant.SUCCESS));
+                new ResponseJson<>(overviewDto, HttpStatus.OK, Constant.ORDER_OVERVIEW_SUCCESS));
 
     }
 
@@ -34,7 +34,7 @@ public class OverviewController {
     public ResponseEntity<ResponseJson<List<ChartOverviewDto>>> getChartOverview() {
         List<ChartOverviewDto> chartOverview = orderService.getChartOverview();
         return ResponseEntity.ok().body(
-                new ResponseJson<>(chartOverview, HttpStatus.OK, Constant.SUCCESS));
+                new ResponseJson<>(chartOverview, HttpStatus.OK, Constant.CHART_SUCCESS));
 
     }
 

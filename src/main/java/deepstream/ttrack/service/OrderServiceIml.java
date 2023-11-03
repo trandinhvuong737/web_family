@@ -285,7 +285,7 @@ public class OrderServiceIml implements OrderService {
         return new ResponseJson<>(orderResponseDto, HttpStatus.OK, Constant.SUCCESS);
     }
 
-    @Scheduled(fixedRate = 1800000)
+//    @Scheduled(fixedRate = 1800000)
     public void testCall() {
         LocalDateTime endDate = LocalDateTime.now(ZoneId.of(ASIA_HO_CHI_MINH));
         LocalDateTime startDate = endDate.minusDays(30);
