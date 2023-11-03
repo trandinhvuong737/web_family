@@ -21,7 +21,7 @@ public class OrderResponseDto {
 
     private String product;
 
-    private Integer quantity;
+    private Double quantity;
 
     private String status;
 

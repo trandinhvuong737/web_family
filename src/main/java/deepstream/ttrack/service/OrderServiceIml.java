@@ -285,7 +285,27 @@ public class OrderServiceIml implements OrderService {
         return new ResponseJson<>(orderResponseDto, HttpStatus.OK, Constant.SUCCESS);
     }
 
-    @Scheduled(fixedRate = 1800000)
+    @Override
+    public OrderResponseDto getOrder(int id) {
+        Order order = orderRepository.getOrderByOrderId(id);
+        if(ObjectUtils.isEmpty(order)){
+            throw new BadRequestException(
+                    new SysError(Errors.NOT_FOUND_ORDER, new ErrorParam(Errors.ORDER_ID)));
+        }
+        OrderResponseDto orderResponse = new OrderResponseDto();
+        orderResponse.setOrderId(order.getOrderId());
+        orderResponse.setProduct(order.getProduct());
+        orderResponse.setCustomer(order.getCustomer());
+        orderResponse.setCreateAt(order.getCreateAt());
+        orderResponse.setAddress(order.getAddress());
+        orderResponse.setStatus(order.getStatus());
+        orderResponse.setQuantity(order.getQuantity());
+        orderResponse.setDiscountCode(order.getDiscountCode());
+        orderResponse.setPhoneNumber(order.getPhoneNumber());
+        return orderResponse;
+    }
+
+    //    @Scheduled(fixedRate = 1800000)
     public void testCall() {
         LocalDateTime endDate = LocalDateTime.now(ZoneId.of(ASIA_HO_CHI_MINH));
         LocalDateTime startDate = endDate.minusDays(30);

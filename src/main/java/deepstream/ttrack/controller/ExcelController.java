@@ -24,21 +24,21 @@ public class ExcelController {
     private final ExcelService excelService;
 
     @PostMapping("/export")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAnyRole('ROLE_SUPER_ADMIN','ROLE_ADMIN')")
     public void exportToExcel(HttpServletResponse response,
                               @RequestBody DateRangeDto dateRangeDto) throws IOException {
         excelService.exportToExcel(response, dateRangeDto);
     }
 
     @PostMapping("/export-vn-post")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAnyRole('ROLE_SUPER_ADMIN','ROLE_ADMIN')")
     public void exportToExcelVnPost(HttpServletResponse response,
                                     @RequestBody DateRangeDto dateRangeDto) throws IOException {
         excelService.exportToExcelVnPost(response, dateRangeDto);
     }
 
     @PostMapping("/import-file-excel")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAnyRole('ROLE_SUPER_ADMIN','ROLE_ADMIN')")
     public ResponseEntity<ResponseJson> importFileExcel(@RequestBody List<String> listPhoneNumber){
         excelService.updateStatusByListPhone(listPhoneNumber);
         return ResponseEntity.ok().body(
