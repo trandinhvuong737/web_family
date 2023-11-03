@@ -39,4 +39,5 @@ public interface OrderRepository extends JpaRepository<Order,Integer> {
     List<Order> getOrderByPhoneNumber(String phoneNumber, String productName);
     @Query("SELECT o FROM Order o WHERE o.createAt between :startDate and :endDate and o.product = :productName")
     List<Order> getOrderByDateRangeAndProduct(LocalDate startDate, LocalDate endDate, String productName);
+    Order getOrderByOrderId(int id);
 }

@@ -29,4 +29,6 @@ public interface OrderService {
     List<OrderResponseDto> getAllOrderByFilter(DateRangeDto dateRangeDto);
 
     ResponseJson<OrderResponseDto> checkOrder(String phoneNumber);
+
+    OrderResponseDto getOrder(int id);
 }

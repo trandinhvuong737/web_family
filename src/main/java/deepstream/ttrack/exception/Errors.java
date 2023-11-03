@@ -15,7 +15,6 @@ public class Errors {
     public static final String ERROR_STATUS_FALSE = "lỗi trạng thái sai";
     public static final String PRODUCT_DOES_NOT_EXIST = "product-does-not-exist";
     public static final String PRODUCT_ALREADY_EXISTS = "sản phẩm đã tồn tại";
-
     public static final String PRODUCT_NAME = "tên sản phẩm";
     public static final String DATE_RANGE_NULL = "phạm vi ngày không có giá trị";
     public static final String NOT_FOUND = "không tìm thấy";
@@ -36,6 +35,9 @@ public class Errors {
     public static final String UNIT_PRICE = "đơn giá";
     public static final String UNIT_PRICE_LIMIT = "vượt quá giới hạn loại giá đơn vị";
     public static final String ERROR_ROLE = "Không xóa vai trò quản trị viên cấp cao";
+
+    public static final String NOT_FOUND_ORDER = "không tìm thấy đơn hàng";
+
 
 
 

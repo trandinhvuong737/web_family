@@ -60,6 +60,15 @@ public class OrderController {
 
     }
 
+    @GetMapping("/get-order/{id}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ResponseJson<OrderResponseDto>> getOrder(@PathVariable int id) {
+        OrderResponseDto orders = orderService.getOrder(id);
+        return ResponseEntity.ok().body(
+                new ResponseJson<>(orders, HttpStatus.OK, Constant.SUCCESS));
+
+    }
+
     @PostMapping("/get-order-by-date-range")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ResponseJson<List<OrderResponseDto>>> filterOrderByDateRange( @RequestBody DateRangeDto dateRangeDto) {
