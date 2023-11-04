@@ -6,6 +6,11 @@ swagger-ui:
     url: 'http://localhost:9000'
 
 spring:
-  config:
-    activate:
-      on-profile: local
+    config:
+        activate:
+            on-profile: local
+    datasource:
+        driver-class-name: org.postgresql.Driver
+        username: postgres
+        url: jdbc:postgresql://localhost:5433/order_management?useSSL=false
+        password: Vuong@123

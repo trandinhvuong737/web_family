@@ -6,6 +6,12 @@ swagger-ui:
     url: 'http://192.168.1.25:8080'
 
 spring:
-  config:
-    activate:
-      on-profile: dev
+    config:
+        activate:
+            on-profile: dev
+    datasource:
+        driver-class-name: org.postgresql.Driver
+        username: postgres
+        url: jdbc:postgresql://ordermanagement.c4meynty9bqi.ap-southeast-1.rds.amazonaws.com:5432/ordermanagement?useSSL=false
+        password: Vuong123
+
