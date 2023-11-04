@@ -4,14 +4,10 @@ t-track:
         jwtSecret: 'TTrackApp@f31BmUS)&?O!19W:'
 spring:
     flyway:
-      locations: classpath:db-migration
+        locations: classpath:db-migration
     profiles:
-      active: '@activatedProperties@'
+        active: '@activatedProperties@'
     datasource:
-        driver-class-name: org.postgresql.Driver
-        username: postgres
-        url: jdbc:postgresql://localhost:5433/order_management?useSSL=false
-        password: Vuong@123
         jpa:
             show-sql: true
             properties:
