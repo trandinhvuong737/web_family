@@ -1,0 +1,15 @@
+t-track:
+    app:
+        jwtExpirationMs: '86400000'
+        jwtSecret: 'TTrackApp@f31BmUS)&?O!19W:'
+spring:
+    flyway:
+        locations: classpath:db-migration
+    profiles:
+        active: '@activatedProperties@'
+    datasource:
+        jpa:
+            show-sql: true
+            properties:
+                hibernate:
+                    format_sql: true

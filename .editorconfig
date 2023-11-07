@@ -1,0 +1,17 @@
+# http://editorconfig.org
+root = true
+
+[*]
+indent_style = space
+indent_size = 4
+continuation_indent_size = 8
+end_of_line = lf
+charset = utf-8
+trim_trailing_whitespace = true
+insert_final_newline = true
+
+[*.json]
+indent_style = space
+indent_size = 2
+
+#reference use repository on github: https://github.com/Creators-of-Create/Create/blob/mc1.18/dev/.editorconfig
