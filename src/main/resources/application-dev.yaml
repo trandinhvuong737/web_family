@@ -3,7 +3,7 @@ server:
 
 swagger-ui:
   server:
-    url: 'http://13.251.17.45:8080'
+    url: 'http://44.215.182.14:8080'
 
 spring:
     config:
@@ -12,6 +12,6 @@ spring:
     datasource:
         driver-class-name: org.postgresql.Driver
         username: postgres
-        url: jdbc:postgresql://ordermanagement.c4meynty9bqi.ap-southeast-1.rds.amazonaws.com:5432/ordermanagement?useSSL=false
+        url: jdbc:postgresql://ordermanagement.ckzlsjh5xyuw.us-east-1.rds.amazonaws.com:5432/ordermanagement?useSSL=false
         password: Vuong123
 

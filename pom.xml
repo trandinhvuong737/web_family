@@ -16,7 +16,7 @@
 	<properties>
         <java.version>11</java.version>
         <db.driver>org.postgresql.Driver</db.driver>
-        <db.url>jdbc:postgresql://ordermanagement.c4meynty9bqi.ap-southeast-1.rds.amazonaws.com:5432/ordermanagement</db.url>
+        <db.url>jdbc:postgresql://ordermanagement.ckzlsjh5xyuw.us-east-1.rds.amazonaws:5432/ordermanagement</db.url>
         <db.user>postgres</db.user>
         <db.password>Vuong123</db.password>
         <db.migration.locations>filesystem:src/main/resources/db-migration/*.sql</db.migration.locations>
