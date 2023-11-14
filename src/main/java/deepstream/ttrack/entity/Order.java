@@ -3,7 +3,7 @@ package deepstream.ttrack.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "orders")
@@ -19,7 +19,7 @@ public class Order {
     private int orderId;
 
     @Column(name = "create_at")
-    private LocalDate createAt;
+    private LocalDateTime createAt;
 
     @Column(name = "customer")
     private String customer;

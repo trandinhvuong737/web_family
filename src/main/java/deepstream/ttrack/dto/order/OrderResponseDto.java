@@ -3,7 +3,7 @@ package deepstream.ttrack.dto.order;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -11,7 +11,7 @@ public class OrderResponseDto {
 
     private Integer orderId;
 
-    private LocalDate createAt = LocalDate.now();
+    private LocalDateTime createAt = LocalDateTime.now();
 
     private String customer;
 

@@ -1,5 +1,6 @@
 package deepstream.ttrack.service;
 
+import deepstream.ttrack.dto.product.ProductMap;
 import deepstream.ttrack.dto.user.UserDto;
 import deepstream.ttrack.dto.user.UserUpdate;
 import deepstream.ttrack.entity.Product;
@@ -9,6 +10,7 @@ import deepstream.ttrack.exception.BadRequestException;
 import deepstream.ttrack.exception.ErrorParam;
 import deepstream.ttrack.exception.Errors;
 import deepstream.ttrack.exception.SysError;
+import deepstream.ttrack.mapper.ProductMapper;
 import deepstream.ttrack.repository.ProductRepository;
 import deepstream.ttrack.repository.RoleRepository;
 import deepstream.ttrack.repository.UserRepository;
@@ -52,6 +54,7 @@ public class UserServiceIml implements UserService {
         List<User> users = userRepository.findAll();
         List<UserDto> userDtos = new ArrayList<>();
         for (User user:users) {
+            List<ProductMap> products = ProductMapper.INSTANCE.productMapToProductResponseDtos(user.getProducts());
             UserDto userDto = new UserDto();
             userDto.setId(user.getId());
             userDto.setEmail(user.getEmail());
@@ -59,8 +62,7 @@ public class UserServiceIml implements UserService {
             userDto.setPassword(user.getPassword());
             userDto.setRoleId(user.getRole().getRoleId());
             userDto.setRoleName(user.getRole().getName());
-            userDto.setProductName(user.getProduct().getProductName());
-            userDto.setProductId(user.getProduct().getProductId());
+            userDto.setProducts(products);
             userDtos.add(userDto);
         }
         return userDtos;
@@ -77,15 +79,21 @@ public class UserServiceIml implements UserService {
                         new SysError(Errors.ERROR_ROLE_NOT_FOUND, new ErrorParam(Errors.ROLE_ID)))
         );
 
-        Product product = productRepository.findById(userUpdate.getProductId()).orElseThrow(
-                () -> new BadRequestException(
-                        new SysError(Errors.NOT_FOUND, new ErrorParam(Errors.PRODUCT_ID)))
-        );
+        List<Product> products = new ArrayList<>();
+        for (ProductMap productMap: userUpdate.getProduct())
+        {
+            Product product = productRepository.findById(productMap.getProductId()).orElseThrow(
+                    () -> new BadRequestException(
+                            new SysError(Errors.NOT_FOUND, new ErrorParam(Errors.PRODUCT_ID)))
+            );
+            products.add(product);
+        }
+
 
         user.setUsername(userUpdate.getUsername());
         user.setEmail(userUpdate.getEmail() );
         user.setRole(role);
-        user.setProduct(product);
+        user.setProducts(products);
         user.setPassword(encoder.encode(userUpdate.getPassword()));
         userRepository.save(user);
     }

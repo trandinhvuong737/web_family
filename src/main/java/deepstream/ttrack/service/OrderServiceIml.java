@@ -31,7 +31,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -44,6 +43,8 @@ import java.util.List;
 public class OrderServiceIml implements OrderService {
 
     public static final String ASIA_HO_CHI_MINH = "Asia/Ho_Chi_Minh";
+    public static final int SUPER_ADMIN_ID = 1;
+    public static final int ADMIN_ID = 2;
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
@@ -82,8 +83,8 @@ public class OrderServiceIml implements OrderService {
         order.setUser(user);
         order.setAddress(orderRequest.getAddress());
         order.setCustomer(orderRequest.getCustomer());
-        order.setProduct(user.getProduct().getProductName());
-        order.setCreateAt(LocalDate.now(ZoneId.of(ASIA_HO_CHI_MINH)));
+        order.setProduct(orderRequest.getProductName());
+        order.setCreateAt(LocalDateTime.now(ZoneId.of(ASIA_HO_CHI_MINH)));
         order.setPhoneNumber(orderRequest.getPhoneNumber());
         order.setQuantity(orderRequest.getQuantity());
         order.setStatus(orderRequest.getStatus());
@@ -103,6 +104,7 @@ public class OrderServiceIml implements OrderService {
         order.setQuantity(orderRequest.getQuantity());
         order.setStatus(orderRequest.getStatus());
         order.setDiscountCode(orderRequest.getDiscountCode());
+        order.setProduct(orderRequest.getProductName());
         orderRepository.save(order);
     }
 
@@ -117,17 +119,17 @@ public class OrderServiceIml implements OrderService {
 
     @Override
     public List<OrderResponseDto> getAllOrder() {
-        testCall();
         String username = WebUtils.getUsername();
         User user = userRepository.findByUsername(username).orElseThrow(
                 () -> new BadRequestException(
                         new SysError(Errors.ERROR_USER_NOT_FOUND, new ErrorParam(Errors.USERNAME)))
         );
         List<Order> orders;
-        if (user.getProduct().getProductName().equals("all")) {
+        int roleId = user.getRole().getRoleId();
+        if( roleId == SUPER_ADMIN_ID || roleId == ADMIN_ID ){
             orders = orderRepository.getAllOrder();
         } else {
-            orders = orderRepository.getAllOrderByProduct(user.getProduct().getProductName());
+            orders = orderRepository.getAllOrderByProduct(username);
         }
 
         List<OrderResponseDto> orderResponse = new ArrayList<>();
@@ -156,27 +158,26 @@ public class OrderServiceIml implements OrderService {
 
     @Override
     public OverviewDto getOverview(DateRangeDto dateRange) {
-
         String username = WebUtils.getUsername();
         User user = userRepository.findByUsername(username).orElseThrow(
                 () -> new BadRequestException(
                         new SysError(Errors.ERROR_USER_NOT_FOUND, new ErrorParam(Errors.USERNAME)))
         );
-        LocalDate startDate = dateRange.getStartDate();
-        LocalDate endDate = dateRange.getEndDate();
-        String productName = user.getProduct().getProductName();
+        LocalDateTime startDate = dateRange.getStartDate().atStartOfDay();
+        LocalDateTime endDate = dateRange.getEndDate().atTime(23,59,59);
         OverviewDto overview = new OverviewDto();
         int totalProduct = 0;
         int totalOrder;
         long totalAmount = 0;
         long totalTransportFee = 0L;
         List<Order> orders;
-
-        if (user.getProduct().getProductName().equals("all")) {
-            orders = orderRepository.getOrderByDateRange(dateRange.getStartDate(), dateRange.getEndDate());
-        } else {
-            orders = orderRepository.getOrderByDateRangeAndProduct(startDate, endDate, productName);
+        int roleId = user.getRole().getRoleId();
+        if( roleId == SUPER_ADMIN_ID || roleId == ADMIN_ID ){
+            orders = orderRepository.getOrderByDateRangeAndUsername(startDate, endDate);
+        }else {
+            orders = orderRepository.getOrderByDateRangeAndUsername(startDate, endDate, username);
         }
+
         for (Order order : orders) {
             Product product = productRepository.getProductByProductName(order.getProduct());
             totalProduct += (int) order.getQuantity();
@@ -194,7 +195,6 @@ public class OrderServiceIml implements OrderService {
 
     @Override
     public List<ChartOverviewDto> getChartOverview() {
-
         String username = WebUtils.getUsername();
         User user = userRepository.findByUsername(username).orElseThrow(
                 () -> new BadRequestException(
@@ -202,54 +202,72 @@ public class OrderServiceIml implements OrderService {
         );
 
         List<ChartOverviewDto> chartOverviews = new ArrayList<>();
-        LocalDate date = LocalDate.now(ZoneId.of(ASIA_HO_CHI_MINH));
-        if (user.getProduct().getProductName().equals("all")) {
-            for (int i = 6; i >= 0; i--) {
-                ChartOverviewDto overviewDto = new ChartOverviewDto();
-                LocalDate minusDays = date.minusDays(i);
-                int totalOrder = orderRepository.countOrder(minusDays);
-                Integer totalProduct = orderRepository.sumProduct(minusDays);
-                long totalTransportFee = 0L;
-                List<Order> orders = orderRepository.getOrderByDate(minusDays);
-                setChart(chartOverviews, overviewDto, minusDays, totalOrder, totalProduct, totalTransportFee, orders);
+        LocalDateTime date = LocalDate.now(ZoneId.of(ASIA_HO_CHI_MINH)).atStartOfDay();
+
+        for (int i = 6; i >= 0; i--) {
+
+            ChartOverviewDto overviewDto = new ChartOverviewDto();
+            LocalDateTime startDays = date.toLocalDate().minusDays(i).atStartOfDay();
+            LocalDateTime endDays = date.toLocalDate().minusDays(i).atTime(23,59,59);
+
+
+            int totalOrder;
+            Integer totalProduct;
+            List<Order> orders;
+            long totalTransportFee = 0L;
+
+            int roleId = user.getRole().getRoleId();
+            if( roleId == SUPER_ADMIN_ID || roleId == ADMIN_ID){
+                totalOrder = orderRepository.countOrder(startDays, endDays);
+                totalProduct = orderRepository.sumProduct(startDays, endDays);
+                orders = orderRepository.getOrderByDate(startDays, endDays);
+            }else {
+                totalOrder = orderRepository.countOrder(startDays,endDays, username);
+                totalProduct = orderRepository.sumProduct(startDays, endDays, username);
+                orders = orderRepository.getOrderByDate(startDays, endDays, username);
             }
-        } else {
-            for (int i = 6; i >= 0; i--) {
-                ChartOverviewDto overviewDto = new ChartOverviewDto();
-                LocalDate minusDays = date.minusDays(i);
-                int totalOrder = orderRepository.countOrder(minusDays, user.getProduct().getProductName());
-                Integer totalProduct = orderRepository.sumProduct(minusDays, user.getProduct().getProductName());
-                long totalTransportFee = 0L;
-                List<Order> orders = orderRepository.getOrderByDate(minusDays, user.getProduct().getProductName());
-                setChart(chartOverviews, overviewDto, minusDays, totalOrder, totalProduct, totalTransportFee, orders);
+
+            for (Order order : orders
+            ) {
+                Product product = productRepository.getProductByProductName(order.getProduct());
+                totalTransportFee += (long) order.getQuantity() * product.getTransportFee();
             }
+
+            if (totalOrder > 0) {
+                overviewDto.setDate(startDays.toLocalDate());
+                overviewDto.setTotalOrder(totalOrder);
+                overviewDto.setTotalProduct(totalProduct);
+                overviewDto.setTotalTransportFee(totalTransportFee);
+                chartOverviews.add(overviewDto);
+            }
+
         }
+
         return chartOverviews;
     }
 
     @Override
     public List<OrderResponseDto> getAllOrderByFilter(DateRangeDto dateRangeDto) {
-
         String username = WebUtils.getUsername();
         User user = userRepository.findByUsername(username).orElseThrow(
                 () -> new BadRequestException(
                         new SysError(Errors.ERROR_USER_NOT_FOUND, new ErrorParam(Errors.USERNAME)))
         );
 
-        ZoneId zoneId = ZoneId.of(ASIA_HO_CHI_MINH);
-        // Create a ZonedDateTime with the LocalDate and time zone
-        LocalDate startDate = dateRangeDto.getStartDate().atStartOfDay(zoneId).toLocalDate();
-        LocalDate endDate = dateRangeDto.getEndDate().atStartOfDay(zoneId).toLocalDate();
+        LocalDateTime startDate = dateRangeDto.getStartDate().atStartOfDay();
+        LocalDateTime endDate = dateRangeDto.getEndDate().atTime(23,59,59);
 
         if (ObjectUtils.isEmpty(startDate) || ObjectUtils.isEmpty(endDate)) {
             throw new BadRequestException(
                     new SysError(Errors.DATE_RANGE_NULL, new ErrorParam(Errors.DATE_RANGE)));
         }
+
         List<Order> orders;
-        if (user.getProduct().getProductName().equals("all")) {
+        int roleId = user.getRole().getRoleId();
+        if( roleId == SUPER_ADMIN_ID || roleId == ADMIN_ID ){
             orders = orderRepository.getOrderByDateRange(startDate, endDate);
         } else {
-            orders = orderRepository.getOrderByDateRange(startDate, endDate, user.getProduct().getProductName());
+            orders = orderRepository.getOrderByDateRange(startDate, endDate, username);
         }
 
         List<OrderResponseDto> orderResponse = new ArrayList<>();
@@ -266,22 +284,26 @@ public class OrderServiceIml implements OrderService {
                 () -> new BadRequestException(
                         new SysError(Errors.ERROR_USER_NOT_FOUND, new ErrorParam(Errors.USERNAME)))
         );
-
         OrderResponseDto orderResponseDto = new OrderResponseDto();
-        List<Order> orders = orderRepository.getOrderByPhoneNumber(phoneNumber, user.getProduct().getProductName());
-        if (!orders.isEmpty()) {
-            for (Order order : orders) {
-                if (order.getStatus().toLowerCase().equals(Status.PENDING.getDisplayName())) {
-                    throw new BadRequestException(
-                            new SysError("Đã tồn tại đơn hàng với tên: "
-                                    .concat(order.getCustomer())
-                                    .concat(" và số điện thoại: ")
-                                    .concat(order.getPhoneNumber()), new ErrorParam(Errors.PHONE_NUMBER)));
-                } else {
-                    orderResponseDto = OrderMapper.INSTANCE.orderToOrderResponseDto(order);
+        List<Product> products = user.getProducts();
+        for (Product product:products
+             ) {
+            List<Order> orders = orderRepository.getOrderByPhoneNumber(phoneNumber, product.getProductName());
+            if (!orders.isEmpty()) {
+                for (Order order : orders) {
+                    if (order.getStatus().toLowerCase().equals(Status.PENDING.getDisplayName())) {
+                        throw new BadRequestException(
+                                new SysError("Đã tồn tại đơn hàng với tên: "
+                                        .concat(order.getCustomer())
+                                        .concat(" và số điện thoại: ")
+                                        .concat(order.getPhoneNumber()), new ErrorParam(Errors.PHONE_NUMBER)));
+                    } else {
+                        orderResponseDto = OrderMapper.INSTANCE.orderToOrderResponseDto(order);
+                    }
                 }
             }
         }
+
         return new ResponseJson<>(orderResponseDto, HttpStatus.OK, Constant.SUCCESS);
     }
 
@@ -360,21 +382,6 @@ public class OrderServiceIml implements OrderService {
                 .block();
     }
 
-    private void setChart(List<ChartOverviewDto> chartOverviews, ChartOverviewDto overviewDto, LocalDate minusDays, int totalOrder, Integer totalProduct, long totalTransportFee, List<Order> orders) {
-        for (Order order : orders
-        ) {
-            Product product = productRepository.getProductByProductName(order.getProduct());
-            totalTransportFee += (long) order.getQuantity() * product.getTransportFee();
-        }
-
-        if (totalOrder > 0) {
-            overviewDto.setDate(minusDays);
-            overviewDto.setTotalOrder(totalOrder);
-            overviewDto.setTotalProduct(totalProduct);
-            overviewDto.setTotalTransportFee(totalTransportFee);
-            chartOverviews.add(overviewDto);
-        }
-    }
 }
 
 

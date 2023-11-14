@@ -4,8 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+
+import deepstream.ttrack.dto.product.ProductMap;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -33,7 +37,7 @@ public class SignupRequest {
     private int roleId;
 
     @NotBlank(message = "productId is required.")
-    private int productId;
+    private List<ProductMap> products;
 
 }
 

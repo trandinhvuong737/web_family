@@ -1,14 +1,17 @@
 package deepstream.ttrack.service;
 
+import deepstream.ttrack.common.utils.WebUtils;
 import deepstream.ttrack.dto.product.ProductRequestDto;
 import deepstream.ttrack.dto.product.ProductResponseDto;
 import deepstream.ttrack.entity.Product;
+import deepstream.ttrack.entity.User;
 import deepstream.ttrack.exception.BadRequestException;
 import deepstream.ttrack.exception.ErrorParam;
 import deepstream.ttrack.exception.Errors;
 import deepstream.ttrack.exception.SysError;
 import deepstream.ttrack.mapper.ProductMapper;
 import deepstream.ttrack.repository.ProductRepository;
+import deepstream.ttrack.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -18,15 +21,33 @@ import java.util.List;
 public class ProductServiceIml implements ProductService{
 
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
 
-    public ProductServiceIml(ProductRepository productRepository) {
+    public static final int SUPER_ADMIN_ID = 1;
+    public static final int ADMIN_ID = 2;
+
+    public ProductServiceIml(ProductRepository productRepository, UserRepository userRepository) {
         this.productRepository = productRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
     public List<ProductResponseDto> getAllProduct() {
+        String username = WebUtils.getUsername();
+        User user = userRepository.findByUsername(username).orElseThrow(
+                () -> new BadRequestException(
+                        new SysError(Errors.ERROR_USER_NOT_FOUND, new ErrorParam(Errors.USERNAME)))
+        );
         List<ProductResponseDto> responseDtos = new ArrayList<>();
-        List<Product> products = productRepository.findAll();
+        List<Product> products ;
+
+        int roleId = user.getRole().getRoleId();
+        if( roleId == SUPER_ADMIN_ID || roleId == ADMIN_ID){
+            products = productRepository.findAll();
+        }else {
+            products = user.getProducts();
+        }
+
         for (Product product : products
         ) {
             ProductResponseDto productResponseDto = ProductMapper.INSTANCE.productToProductResponseDto(product);

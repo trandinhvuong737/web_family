@@ -1,15 +1,9 @@
 package deepstream.ttrack.service;
 
 import deepstream.ttrack.common.enums.Status;
-import deepstream.ttrack.common.utils.WebUtils;
 import deepstream.ttrack.dto.DateRangeDto;
 import deepstream.ttrack.entity.Order;
 import deepstream.ttrack.entity.Product;
-import deepstream.ttrack.entity.User;
-import deepstream.ttrack.exception.BadRequestException;
-import deepstream.ttrack.exception.ErrorParam;
-import deepstream.ttrack.exception.Errors;
-import deepstream.ttrack.exception.SysError;
 import deepstream.ttrack.repository.OrderRepository;
 import deepstream.ttrack.repository.ProductRepository;
 import deepstream.ttrack.repository.UserRepository;
@@ -42,22 +36,13 @@ public class ExcelServiceIml implements ExcelService{
     @Override
     public void exportToExcel(HttpServletResponse response, DateRangeDto dateRangeDto) throws IOException {
 
-        String username = WebUtils.getUsername();
-        User user = userRepository.findByUsername(username).orElseThrow(
-                () -> new BadRequestException(
-                        new SysError(Errors.ERROR_USER_NOT_FOUND, new ErrorParam(Errors.USERNAME)))
-        );
-
         ZoneId zoneId = ZoneId.of(ASIA_HO_CHI_MINH);
         // Create a ZonedDateTime with the LocalDate and time zone
         LocalDate startDate = dateRangeDto.getStartDate().atStartOfDay(zoneId).toLocalDate();
         LocalDate endDate = dateRangeDto.getEndDate().atStartOfDay(zoneId).toLocalDate();
         List<Order> orders;
-        if (user.getProduct().getProductName().equals("all")) {
-            orders = orderRepository.getOrdersByStatusEx(startDate,endDate);
-        }else {
-            orders = orderRepository.getOrdersByStatusEx(startDate,endDate,user.getProduct().getProductName());
-        }
+        orders = orderRepository.getOrdersByStatusEx(startDate,endDate);
+
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Sheet 1");
 
@@ -107,22 +92,12 @@ public class ExcelServiceIml implements ExcelService{
     @Override
     public void exportToExcelVnPost(HttpServletResponse response, DateRangeDto dateRangeDto) throws IOException {
 
-        String username = WebUtils.getUsername();
-        User user = userRepository.findByUsername(username).orElseThrow(
-                () -> new BadRequestException(
-                        new SysError(Errors.ERROR_USER_NOT_FOUND, new ErrorParam(Errors.USERNAME)))
-        );
         ZoneId zoneId = ZoneId.of("Asia/Ho_Chi_Minh");
         // Create a ZonedDateTime with the LocalDate and time zone
         LocalDate startDate = dateRangeDto.getStartDate().atStartOfDay(zoneId).toLocalDate();
         LocalDate endDate = dateRangeDto.getEndDate().atStartOfDay(zoneId).toLocalDate();
 
-        List<Order> orders;
-        if (user.getProduct().getProductName().equals("all")) {
-            orders = orderRepository.getOrdersByStatusEx(startDate,endDate);
-        }else {
-            orders = orderRepository.getOrdersByStatusEx(startDate,endDate,user.getProduct().getProductName());
-        }
+        List<Order> orders = orderRepository.getOrdersByStatusEx(startDate,endDate);
 
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Sheet 1");

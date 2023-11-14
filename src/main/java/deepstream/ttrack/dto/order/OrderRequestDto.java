@@ -18,4 +18,6 @@ public class OrderRequestDto {
     private String discountCode;
 
     private String status = "pending";
+
+    private String productName;
 }

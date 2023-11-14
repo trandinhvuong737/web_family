@@ -3,6 +3,7 @@ package deepstream.ttrack.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "product")
@@ -28,4 +29,11 @@ public class Product {
 
     @Column(name = "transport_fee")
     private Long transportFee;
+
+    @ManyToMany
+    @JoinTable(name = "users_product",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private List<User> users;
 }

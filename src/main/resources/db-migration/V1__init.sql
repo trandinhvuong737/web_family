@@ -25,11 +25,17 @@ CREATE TABLE public.users
     status      varchar NULL,
     create_date date    NULL,
     role_id     INT     NULL,
-    product_id  int     NULL,
     CONSTRAINT users_pk PRIMARY KEY (user_id),
-    CONSTRAINT users_role_id_fk FOREIGN KEY (role_id) REFERENCES public.role (role_id),
-    CONSTRAINT product_use_id_fk FOREIGN KEY (product_id) REFERENCES public.product (product_id)
+    CONSTRAINT users_role_id_fk FOREIGN KEY (role_id) REFERENCES public.role (role_id)
+);
 
+CREATE TABLE public.users_product
+(
+    user_id    INT,
+    product_id INT,
+    PRIMARY key (user_id, product_id),
+    CONSTRAINT product_user_user_fk FOREIGN KEY (user_id) REFERENCES public.users (user_id),
+    CONSTRAINT product_user_product_fk FOREIGN KEY (product_id) REFERENCES public.product (product_id)
 );
 
 

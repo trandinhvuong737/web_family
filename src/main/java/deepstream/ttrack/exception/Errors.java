@@ -18,7 +18,7 @@ public class Errors {
     public static final String PRODUCT_NAME = "tên sản phẩm";
     public static final String DATE_RANGE_NULL = "phạm vi ngày không có giá trị";
     public static final String NOT_FOUND = "không tìm thấy";
-    public static final String ERROR_EMAIL_NOT_FOUND = "Không tìm thấy email";
+    public static final String ERROR_EMAIL_NOT_FOUND = "email đã tồn tại trong dử liệu";
     public static final String ERROR_USER_NAME_OR_PASSWORD_NOT_FOUND = "tên người dùng hoặc mật khẩu không tìm thấy";
     public static final String USERNAME = "tên tài khoản";
     public static final String PHONE_NUMBER = "số điện thoại";

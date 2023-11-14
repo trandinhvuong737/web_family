@@ -7,6 +7,7 @@ import deepstream.ttrack.dto.JwtResponse;
 import deepstream.ttrack.dto.LoginRequest;
 import deepstream.ttrack.dto.ResponseJson;
 import deepstream.ttrack.dto.SignupRequest;
+import deepstream.ttrack.dto.product.ProductMap;
 import deepstream.ttrack.entity.Product;
 import deepstream.ttrack.entity.Role;
 import deepstream.ttrack.entity.User;
@@ -19,6 +20,9 @@ import deepstream.ttrack.repository.RoleRepository;
 import deepstream.ttrack.repository.UserRepository;
 import deepstream.ttrack.service.UserService;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -93,8 +97,13 @@ public class AuthController {
         Role role = roleRepository.findById(signupRequest.getRoleId()).orElseThrow(
                 () -> new BadRequestException(new SysError(Errors.NOT_FOUND, new ErrorParam(Errors.ROLE))));
 
-        Product product =productRepository.findById(signupRequest.getProductId()).orElseThrow(
-                () -> new BadRequestException(new SysError(Errors.NOT_FOUND, new ErrorParam(Errors.PRODUCT))));
+        List<Product> productList = new ArrayList<>();
+        for (ProductMap productMap:signupRequest.getProducts()
+             ) {
+            Product product =productRepository.findById(productMap.getProductId()).orElseThrow(
+                    () -> new BadRequestException(new SysError(Errors.NOT_FOUND, new ErrorParam(Errors.PRODUCT))));
+            productList.add(product);
+        }
 
         User user =  User.builder()
             .username(signupRequest.getUsername())
@@ -102,7 +111,7 @@ public class AuthController {
             .createDate(LocalDateTime.now())
             .status(Constant.ACTIVE)
             .role(role)
-            .product(product)
+            .products(productList)
             .password(encoder.encode(signupRequest.getPassword()))
             .build();
 

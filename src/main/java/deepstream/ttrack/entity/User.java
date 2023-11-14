@@ -42,13 +42,16 @@ public class User {
     private LocalDateTime createDate;
 
     @ManyToOne
-    @JoinColumn(name = "product_id")
-    private Product product;
-
-    @ManyToOne
     @JoinColumn(name = "role_id")
     private Role role;
 
     @OneToMany(mappedBy = "user")
     private List<Order> orders = new ArrayList<>();
+
+    @ManyToMany
+    @JoinTable(name = "users_product",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "product_id")
+    )
+    private List<Product> products;
 }

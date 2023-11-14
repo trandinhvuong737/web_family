@@ -2,8 +2,11 @@ package deepstream.ttrack.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import deepstream.ttrack.dto.product.ProductMap;
 import lombok.Getter;
 import lombok.Setter;
+
+import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -16,6 +19,5 @@ public class UserDto {
     private String password;
     private Integer roleId;
     private String roleName;
-    private Integer productId;
-    private String productName;
+    private List<ProductMap> products;
 }
