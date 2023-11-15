@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -36,10 +37,8 @@ public class ExcelServiceIml implements ExcelService{
     @Override
     public void exportToExcel(HttpServletResponse response, DateRangeDto dateRangeDto) throws IOException {
 
-        ZoneId zoneId = ZoneId.of(ASIA_HO_CHI_MINH);
-        // Create a ZonedDateTime with the LocalDate and time zone
-        LocalDate startDate = dateRangeDto.getStartDate().atStartOfDay(zoneId).toLocalDate();
-        LocalDate endDate = dateRangeDto.getEndDate().atStartOfDay(zoneId).toLocalDate();
+        LocalDateTime startDate = dateRangeDto.getStartDate().atStartOfDay();
+        LocalDateTime endDate = dateRangeDto.getEndDate().atTime(23,59,59);
         List<Order> orders;
         orders = orderRepository.getOrdersByStatusEx(startDate,endDate);
 
@@ -92,10 +91,8 @@ public class ExcelServiceIml implements ExcelService{
     @Override
     public void exportToExcelVnPost(HttpServletResponse response, DateRangeDto dateRangeDto) throws IOException {
 
-        ZoneId zoneId = ZoneId.of("Asia/Ho_Chi_Minh");
-        // Create a ZonedDateTime with the LocalDate and time zone
-        LocalDate startDate = dateRangeDto.getStartDate().atStartOfDay(zoneId).toLocalDate();
-        LocalDate endDate = dateRangeDto.getEndDate().atStartOfDay(zoneId).toLocalDate();
+        LocalDateTime startDate = dateRangeDto.getStartDate().atStartOfDay();
+        LocalDateTime endDate = dateRangeDto.getEndDate().atTime(23,59,59);
 
         List<Order> orders = orderRepository.getOrdersByStatusEx(startDate,endDate);
 
@@ -160,8 +157,8 @@ public class ExcelServiceIml implements ExcelService{
     @Override
     public void updateStatusByListPhone(List<String> listPhoneNumber) {
         ZoneId zoneId = ZoneId.of(ASIA_HO_CHI_MINH);
-        LocalDate endDate = LocalDate.now(zoneId);
-        LocalDate startDate = endDate.minusMonths(1);
+        LocalDateTime endDate = LocalDate.now(zoneId).atStartOfDay();
+        LocalDateTime startDate = endDate.minusMonths(1);
         List<Order> orders = orderRepository.getOrdersByStatusEx(startDate,endDate);
         for (Order order : orders) {
             for (String phone : listPhoneNumber ) {

@@ -2,6 +2,7 @@ package deepstream.ttrack.service;
 
 import deepstream.ttrack.dto.product.ProductMap;
 import deepstream.ttrack.dto.user.UserDto;
+import deepstream.ttrack.dto.user.UserOverviewDto;
 import deepstream.ttrack.dto.user.UserUpdate;
 import deepstream.ttrack.entity.Product;
 import deepstream.ttrack.entity.Role;
@@ -11,6 +12,7 @@ import deepstream.ttrack.exception.ErrorParam;
 import deepstream.ttrack.exception.Errors;
 import deepstream.ttrack.exception.SysError;
 import deepstream.ttrack.mapper.ProductMapper;
+import deepstream.ttrack.repository.OrderRepository;
 import deepstream.ttrack.repository.ProductRepository;
 import deepstream.ttrack.repository.RoleRepository;
 import deepstream.ttrack.repository.UserRepository;
@@ -26,12 +28,14 @@ public class UserServiceIml implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final ProductRepository productRepository;
+    private final OrderRepository orderRepository;
     private final PasswordEncoder encoder;
 
-    public UserServiceIml(UserRepository userRepository, RoleRepository roleRepository, ProductRepository productRepository, PasswordEncoder encoder) {
+    public UserServiceIml(UserRepository userRepository, RoleRepository roleRepository, ProductRepository productRepository, OrderRepository orderRepository, PasswordEncoder encoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.productRepository = productRepository;
+        this.orderRepository = orderRepository;
         this.encoder = encoder;
     }
     @Override
@@ -53,7 +57,7 @@ public class UserServiceIml implements UserService {
     public List<UserDto> getAllUser() {
         List<User> users = userRepository.findAll();
         List<UserDto> userDtos = new ArrayList<>();
-        for (User user:users) {
+        users.stream().map(user -> {
             List<ProductMap> products = ProductMapper.INSTANCE.productMapToProductResponseDtos(user.getProducts());
             UserDto userDto = new UserDto();
             userDto.setId(user.getId());
@@ -63,10 +67,19 @@ public class UserServiceIml implements UserService {
             userDto.setRoleId(user.getRole().getRoleId());
             userDto.setRoleName(user.getRole().getName());
             userDto.setProducts(products);
-            userDtos.add(userDto);
-        }
+            return userDto;
+        }).forEach(userDtos::add);
         return userDtos;
     }
+
+    @Override
+    public List<UserOverviewDto> getAllUserOverview() {
+        List<User> users = userRepository.findAll();
+        List<UserOverviewDto> userDtos = new ArrayList<>();
+        users.stream().map(this::getUserOverviewDto).forEach(userDtos::add);
+        return userDtos;
+    }
+
 
     @Override
     public void updateUser(UserUpdate userUpdate, int id) {
@@ -105,5 +118,20 @@ public class UserServiceIml implements UserService {
                         new SysError(Errors.ERROR_USER_NOT_FOUND, new ErrorParam(Errors.ID)))
         );
         userRepository.delete(users);
+    }
+
+    private UserOverviewDto getUserOverviewDto(User user) {
+        int totalOder = orderRepository.totalOrOrderByUserOrderId(user.getId());
+        int totalOrderCompleted = orderRepository.totalOrOrderCompletedByUserOrderId(user.getId());
+        int totalOrderPending = orderRepository.totalOrOrderPendingByUserOrderId(user.getId());
+        int totalOrderCanceled = orderRepository.totalOrOrderCanceledByUserOrderId(user.getId());
+        UserOverviewDto userOverviewDto = new UserOverviewDto();
+        userOverviewDto.setId(user.getId());
+        userOverviewDto.setUsername(user.getUsername());
+        userOverviewDto.setTotalOrder(totalOder);
+        userOverviewDto.setTotalOrderCompleted(totalOrderCompleted);
+        userOverviewDto.setTotalOrderPending(totalOrderPending);
+        userOverviewDto.setTotalOrderCanceled(totalOrderCanceled);
+        return userOverviewDto;
     }
 }

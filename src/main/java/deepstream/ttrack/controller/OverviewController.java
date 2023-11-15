@@ -5,7 +5,9 @@ import deepstream.ttrack.dto.DateRangeDto;
 import deepstream.ttrack.dto.ResponseJson;
 import deepstream.ttrack.dto.overview.ChartOverviewDto;
 import deepstream.ttrack.dto.overview.OverviewDto;
+import deepstream.ttrack.dto.user.UserOverviewDto;
 import deepstream.ttrack.service.OrderService;
+import deepstream.ttrack.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import java.util.List;
 @AllArgsConstructor
 public class OverviewController {
     private final OrderService orderService;
+    private final UserService userService;
 
     @PostMapping("/get")
     @PreAuthorize("isAuthenticated()")
@@ -35,6 +38,15 @@ public class OverviewController {
         List<ChartOverviewDto> chartOverview = orderService.getChartOverview();
         return ResponseEntity.ok().body(
                 new ResponseJson<>(chartOverview, HttpStatus.OK, Constant.CHART_SUCCESS));
+
+    }
+
+    @GetMapping("/get-user-overview")
+    @PreAuthorize("hasAnyRole('ROLE_SUPER_ADMIN','ROLE_ADMIN')")
+    public ResponseEntity<ResponseJson<List<UserOverviewDto>>> getAllUserOverview() {
+        List<UserOverviewDto> allUserOverview = userService.getAllUserOverview();
+        return ResponseEntity.ok().body(
+                new ResponseJson<>(allUserOverview, HttpStatus.OK, Constant.SUCCESS));
 
     }
 

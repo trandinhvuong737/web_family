@@ -134,7 +134,20 @@ public class OrderServiceIml implements OrderService {
 
         List<OrderResponseDto> orderResponse = new ArrayList<>();
         orders.stream()
-                .map(OrderMapper.INSTANCE::orderToOrderResponseDto)
+                .map(order -> {
+                    OrderResponseDto responseDto = new OrderResponseDto();
+                    responseDto.setOrderId(order.getOrderId());
+                    responseDto.setProduct(order.getProduct());
+                    responseDto.setStatus(order.getStatus());
+                    responseDto.setAddress(order.getAddress());
+                    responseDto.setCustomer(order.getCustomer());
+                    responseDto.setPhoneNumber(order.getPhoneNumber());
+                    responseDto.setDiscountCode(order.getDiscountCode());
+                    responseDto.setQuantity(order.getQuantity());
+                    responseDto.setCreateAt(order.getCreateAt());
+                    responseDto.setUserName(username);
+                    return responseDto;
+                })
                 .forEach(orderResponse::add);
         return orderResponse;
     }

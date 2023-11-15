@@ -1,6 +1,7 @@
 package deepstream.ttrack.service;
 
 import deepstream.ttrack.dto.user.UserDto;
+import deepstream.ttrack.dto.user.UserOverviewDto;
 import deepstream.ttrack.dto.user.UserUpdate;
 import deepstream.ttrack.entity.User;
 
@@ -13,6 +14,8 @@ public interface UserService {
     User getUserByUsername(String username);
 
     List<UserDto> getAllUser();
+
+    List<UserOverviewDto> getAllUserOverview();
 
     void updateUser(UserUpdate userUpdate, int id);
 

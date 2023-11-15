@@ -26,4 +26,6 @@ public class OrderResponseDto {
     private String status;
 
     private String discountCode;
+
+    private String userName;
 }
