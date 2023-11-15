@@ -4,9 +4,14 @@ import deepstream.ttrack.common.enums.Status;
 import deepstream.ttrack.dto.DateRangeDto;
 import deepstream.ttrack.entity.Order;
 import deepstream.ttrack.entity.Product;
+import deepstream.ttrack.exception.BadRequestException;
+import deepstream.ttrack.exception.ErrorParam;
+import deepstream.ttrack.exception.Errors;
+import deepstream.ttrack.exception.SysError;
 import deepstream.ttrack.repository.OrderRepository;
 import deepstream.ttrack.repository.ProductRepository;
 import deepstream.ttrack.repository.UserRepository;
+import org.apache.commons.lang3.ObjectUtils;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.springframework.stereotype.Service;
@@ -36,7 +41,7 @@ public class ExcelServiceIml implements ExcelService{
 
     @Override
     public void exportToExcel(HttpServletResponse response, DateRangeDto dateRangeDto) throws IOException {
-
+        veryfilecode(dateRangeDto);
         LocalDateTime startDate = dateRangeDto.getStartDate().atStartOfDay();
         LocalDateTime endDate = dateRangeDto.getEndDate().atTime(23,59,59);
         List<Order> orders;
@@ -90,7 +95,7 @@ public class ExcelServiceIml implements ExcelService{
 
     @Override
     public void exportToExcelVnPost(HttpServletResponse response, DateRangeDto dateRangeDto) throws IOException {
-
+        veryfilecode(dateRangeDto);
         LocalDateTime startDate = dateRangeDto.getStartDate().atStartOfDay();
         LocalDateTime endDate = dateRangeDto.getEndDate().atTime(23,59,59);
 
@@ -179,5 +184,17 @@ public class ExcelServiceIml implements ExcelService{
         headerStyle.setFillForegroundColor(IndexedColors.BLUE.getIndex()); // Set background color
         headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
         headerRow.getCell(index).setCellStyle(headerStyle);
+    }
+
+
+    private static void veryfilecode(DateRangeDto dateRangeDto) {
+        if(ObjectUtils.isEmpty(dateRangeDto.getStartDate())){
+            throw new BadRequestException(
+                    new SysError(Errors.START_DATE_HAS_NOT_BEEN_ENTERED, new ErrorParam(Errors.START_DATE)));
+        }
+        if(ObjectUtils.isEmpty(dateRangeDto.getEndDate())){
+            throw new BadRequestException(
+                    new SysError(Errors.END_DATE_HAS_NOT_BEEN_ENTERED, new ErrorParam(Errors.END_DATE)));
+        }
     }
 }

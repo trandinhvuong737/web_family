@@ -24,6 +24,8 @@ public class Errors {
     public static final String PHONE_NUMBER = "số điện thoại";
     public static final String ID = "id";
     public static final String ORDER_ID = "order-id";
+    public static final String START_DATE = "start date";
+    public static final String END_DATE = "end date";
     public static final String ROLE_ID = "role-id";
     public static final String STATUS = "status";
     public static final String DATE_RANGE = "Phạm vi ngày";
@@ -35,8 +37,10 @@ public class Errors {
     public static final String UNIT_PRICE = "đơn giá";
     public static final String UNIT_PRICE_LIMIT = "vượt quá giới hạn loại giá đơn vị";
     public static final String ERROR_ROLE = "Không xóa vai trò quản trị viên cấp cao";
-
     public static final String NOT_FOUND_ORDER = "không tìm thấy đơn hàng";
+    public static final String START_DATE_HAS_NOT_BEEN_ENTERED = "Ngày bắt đầu chưa được nhập";
+    public static final String END_DATE_HAS_NOT_BEEN_ENTERED = "Ngày kết thúc chưa được nhập";
+
 
 
 
