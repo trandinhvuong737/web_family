@@ -7,11 +7,13 @@ import deepstream.ttrack.dto.order.OrderRequestDto;
 import deepstream.ttrack.dto.order.OrderResponseDto;
 import deepstream.ttrack.service.OrderService;
 import lombok.AllArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -26,6 +28,17 @@ public class OrderController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ResponseJson<Boolean>> createDevice(@RequestBody OrderRequestDto orderRequestDto) {
         orderService.addNewOrder(orderRequestDto);
+        return ResponseEntity.ok().body(
+                new ResponseJson<>(true, HttpStatus.OK, Constant.ADD_ORDER_SUCCESS));
+
+    }
+
+    @PostMapping("/new-order-by-date/{date}")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ResponseJson<Boolean>> addNewOrderByDate(
+            @RequestBody OrderRequestDto orderRequestDto,
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        orderService.addNewOrderByDate(orderRequestDto, date);
         return ResponseEntity.ok().body(
                 new ResponseJson<>(true, HttpStatus.OK, Constant.ADD_ORDER_SUCCESS));
 

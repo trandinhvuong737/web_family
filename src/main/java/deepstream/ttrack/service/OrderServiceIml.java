@@ -93,6 +93,33 @@ public class OrderServiceIml implements OrderService {
     }
 
     @Override
+    public void addNewOrderByDate(OrderRequestDto orderRequest, LocalDate date) {
+
+        String username = WebUtils.getUsername();
+        User user = userRepository.findByUsername(username).orElseThrow(
+                () -> new BadRequestException(
+                        new SysError(Errors.ERROR_USER_NOT_FOUND, new ErrorParam(Errors.USERNAME)))
+        );
+
+        if (!Status.getDisplayNames().contains(orderRequest.getStatus())) {
+            throw new BadRequestException(
+                    new SysError(Errors.ERROR_STATUS_FALSE, new ErrorParam(Errors.STATUS)));
+        }
+
+        Order order = new Order();
+        order.setUser(user);
+        order.setAddress(orderRequest.getAddress());
+        order.setCustomer(orderRequest.getCustomer());
+        order.setProduct(orderRequest.getProductName());
+        order.setCreateAt(date.atStartOfDay());
+        order.setPhoneNumber(orderRequest.getPhoneNumber());
+        order.setQuantity(orderRequest.getQuantity());
+        order.setStatus(orderRequest.getStatus());
+        order.setDiscountCode(orderRequest.getDiscountCode());
+        orderRepository.save(order);
+    }
+
+    @Override
     public void updateOrder(int orderId, OrderRequestDto orderRequest) {
         Order order = orderRepository.findById(orderId).orElseThrow(
                 () -> new BadRequestException(

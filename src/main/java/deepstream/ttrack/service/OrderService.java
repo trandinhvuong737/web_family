@@ -6,13 +6,15 @@ import deepstream.ttrack.dto.order.OrderRequestDto;
 import deepstream.ttrack.dto.order.OrderResponseDto;
 import deepstream.ttrack.dto.overview.ChartOverviewDto;
 import deepstream.ttrack.dto.overview.OverviewDto;
-import org.springframework.http.HttpStatus;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public interface OrderService {
 
     public void addNewOrder(OrderRequestDto orderRequest);
+
+    void addNewOrderByDate(OrderRequestDto orderRequest, LocalDate date);
 
     public void updateOrder(int orderId, OrderRequestDto orderRequest);
 
