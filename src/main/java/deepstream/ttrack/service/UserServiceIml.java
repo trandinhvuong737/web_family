@@ -80,7 +80,7 @@ public class UserServiceIml implements UserService {
         );
 
         List<Product> products = new ArrayList<>();
-        for (ProductMap productMap: userUpdate.getProduct())
+        for (ProductMap productMap: userUpdate.getProducts())
         {
             Product product = productRepository.findById(productMap.getProductId()).orElseThrow(
                     () -> new BadRequestException(
