@@ -13,5 +13,5 @@ public class UserUpdate {
     private String email;
     private String password;
     private int roleId;
-    private List<ProductMap> product;
+    private List<ProductMap> products;
 }

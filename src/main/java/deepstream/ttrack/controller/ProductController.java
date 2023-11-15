@@ -20,7 +20,7 @@ public class ProductController {
     private final ProductService productService;
 
     @GetMapping("/get")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAnyRole('ROLE_SUPER_ADMIN','ROLE_ADMIN')")
     public ResponseEntity<ResponseJson<List<ProductResponseDto>>> getAllProduct() {
         List<ProductResponseDto> products = productService.getAllProduct();
         return ResponseEntity.ok().body(
@@ -29,7 +29,7 @@ public class ProductController {
     }
 
     @GetMapping("/get/{productId}")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasAnyRole('ROLE_SUPER_ADMIN','ROLE_ADMIN')")
     public ResponseEntity<ResponseJson<ProductResponseDto>> getProductById(@PathVariable int productId) {
         ProductResponseDto product = productService.getProductById(productId);
         return ResponseEntity.ok().body(
