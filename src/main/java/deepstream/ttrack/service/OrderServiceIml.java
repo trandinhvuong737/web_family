@@ -319,13 +319,22 @@ public class OrderServiceIml implements OrderService {
 
     @Override
     public ResponseJson<OrderResponseDto> checkOrder(String phoneNumber) {
+
         String username = WebUtils.getUsername();
         User user = userRepository.findByUsername(username).orElseThrow(
                 () -> new BadRequestException(
                         new SysError(Errors.ERROR_USER_NOT_FOUND, new ErrorParam(Errors.USERNAME)))
         );
+
         OrderResponseDto orderResponseDto = new OrderResponseDto();
-        List<Product> products = user.getProducts();
+        List<Product> products;
+        int roleId = user.getRole().getRoleId();
+        if( roleId == SUPER_ADMIN_ID || roleId == ADMIN_ID ){
+            products = productRepository.findAll();
+        } else {
+            products = user.getProducts();
+        }
+
         for (Product product:products
              ) {
             List<Order> orders = orderRepository.getOrderByPhoneNumber(phoneNumber, product.getProductName());
