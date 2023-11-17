@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/address")
+@RequestMapping("/api/address")
 @AllArgsConstructor
 public class AddressController {
     private static final Logger logger = LoggerFactory.getLogger(OrderServiceIml.class);

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/overview")
+@RequestMapping("/api/overview")
 @AllArgsConstructor
 public class OverviewController {
     private final OrderService orderService;
