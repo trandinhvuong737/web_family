@@ -1,6 +1,5 @@
 package deepstream.ttrack.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import deepstream.ttrack.common.constant.Constant;
 import deepstream.ttrack.common.enums.Status;
 import deepstream.ttrack.common.utils.WebUtils;
@@ -10,7 +9,6 @@ import deepstream.ttrack.dto.order.OrderRequestDto;
 import deepstream.ttrack.dto.order.OrderResponseDto;
 import deepstream.ttrack.dto.overview.ChartOverviewDto;
 import deepstream.ttrack.dto.overview.OverviewDto;
-import deepstream.ttrack.entity.MissedCall;
 import deepstream.ttrack.entity.Order;
 import deepstream.ttrack.entity.Product;
 import deepstream.ttrack.entity.User;
@@ -18,10 +16,6 @@ import deepstream.ttrack.exception.BadRequestException;
 import deepstream.ttrack.exception.ErrorParam;
 import deepstream.ttrack.exception.Errors;
 import deepstream.ttrack.exception.SysError;
-import deepstream.ttrack.model.Item;
-import deepstream.ttrack.model.MissedCallModel;
-import deepstream.ttrack.model.TokenModel;
-import deepstream.ttrack.repository.MissedCallRepository;
 import deepstream.ttrack.repository.OrderRepository;
 import deepstream.ttrack.repository.ProductRepository;
 import deepstream.ttrack.repository.UserRepository;
@@ -29,11 +23,8 @@ import deepstream.ttrack.mapper.OrderMapper;
 import org.apache.commons.lang3.ObjectUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.*;
 import java.util.ArrayList;
@@ -48,22 +39,14 @@ public class OrderServiceIml implements OrderService {
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
-    private final MissedCallRepository missedCallRepository;
-    private final WebClient webClient;
-    private final ObjectMapper objectMapper;
     private static final Logger logger = LoggerFactory.getLogger(OrderServiceIml.class);
 
     public OrderServiceIml(OrderRepository orderRepository,
                            UserRepository userRepository,
-                           ProductRepository productRepository,
-                           MissedCallRepository missedCallRepository,
-                           ObjectMapper objectMapper) {
+                           ProductRepository productRepository) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.productRepository = productRepository;
-        this.missedCallRepository = missedCallRepository;
-        this.objectMapper = objectMapper;
-        this.webClient = WebClient.create("");
     }
 
     @Override
@@ -94,7 +77,7 @@ public class OrderServiceIml implements OrderService {
 
     @Override
     public void addNewOrderByDate(OrderRequestDto orderRequest, LocalDate date) {
-
+        checkOrder(orderRequest.getPhoneNumber());
         String username = WebUtils.getUsername();
         User user = userRepository.findByUsername(username).orElseThrow(
                 () -> new BadRequestException(
@@ -374,61 +357,6 @@ public class OrderServiceIml implements OrderService {
         orderResponse.setDiscountCode(order.getDiscountCode());
         orderResponse.setPhoneNumber(order.getPhoneNumber());
         return orderResponse;
-    }
-
-    //    @Scheduled(fixedRate = 1800000)
-    public void testCall() {
-        LocalDateTime endDate = LocalDateTime.now(ZoneId.of(ASIA_HO_CHI_MINH));
-        LocalDateTime startDate = endDate.minusDays(30);
-        Instant endInstant = endDate.atZone(ZoneId.of(ASIA_HO_CHI_MINH)).toInstant();
-        Instant startInstant = startDate.atZone(ZoneId.of(ASIA_HO_CHI_MINH)).toInstant();
-        TokenModel token = getTokenModel();
-        MissedCallModel response = getMissedCallModel(startInstant, endInstant, token);
-        List<Item> items = response.getPayload().getItems();
-        List<MissedCall> missedCalls = new ArrayList<>();
-        if(!items.isEmpty()){
-            for (Item item:items
-            ) {
-                MissedCall missedCall = new MissedCall();
-                missedCall.setCreatedDate(item.getCreatedDate());
-                missedCall.setDestinationNumber(item.getDestinationNumber());
-                missedCall.setSourceNumber(item.getSourceNumber());
-                missedCalls.add(missedCall);
-            }
-            missedCallRepository.saveAll(missedCalls);
-        }
-    }
-
-    private MissedCallModel getMissedCallModel(Instant startInstant, Instant endInstant, TokenModel token) {
-        UriComponentsBuilder builder = UriComponentsBuilder
-                .fromHttpUrl("https://public-v1-stg.vcontact.services/api/call_transaction/list")
-                .queryParam("disposition", "cancelled")
-                .queryParam("direction", "inbound")
-                .queryParam("page", 1)
-                .queryParam("size", 50)
-                .queryParam("from_date", startInstant.toEpochMilli())
-                .queryParam("to_date", endInstant.toEpochMilli());
-
-        return webClient.get()
-                .uri(builder.toUriString())
-                .header(HttpHeaders.AUTHORIZATION, "Bearer " + token.getPayload().getAccessToken())
-                .retrieve()
-                .bodyToMono(Object.class)
-                .map(jsonNode -> objectMapper.convertValue(jsonNode, MissedCallModel.class))
-                .block();
-    }
-
-    private TokenModel getTokenModel() {
-        UriComponentsBuilder tokenBuilder = UriComponentsBuilder
-                .fromHttpUrl("https://public-v1-stg.vcontact.services/api/auth")
-                .queryParam("apiKey", "D00018F49A543DA4ED33F5B409C207747C1FE6394FE71020F88FA914D1CF0866");
-
-        return webClient.get()
-                .uri(tokenBuilder.toUriString())
-                .retrieve()
-                .bodyToMono(Object.class)
-                .map(jsonNode -> objectMapper.convertValue(jsonNode, TokenModel.class))
-                .block();
     }
 
 }
