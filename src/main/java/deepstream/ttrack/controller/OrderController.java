@@ -106,8 +106,9 @@ public class OrderController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ResponseJson<OrderResponseDto>> checkOrder(
             @PathVariable String phone) {
-        ResponseJson<OrderResponseDto> orderResponse = orderService.checkOrder(phone);
-        return ResponseEntity.ok().body(orderResponse);
+        OrderResponseDto orderResponse = orderService.checkOrder(phone);
+        return ResponseEntity.ok()
+                .body(new ResponseJson<>(orderResponse, HttpStatus.OK, Constant.SUCCESS));
 
     }
 }

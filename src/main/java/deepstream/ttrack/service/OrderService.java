@@ -1,7 +1,6 @@
 package deepstream.ttrack.service;
 
 import deepstream.ttrack.dto.DateRangeDto;
-import deepstream.ttrack.dto.ResponseJson;
 import deepstream.ttrack.dto.order.OrderRequestDto;
 import deepstream.ttrack.dto.order.OrderResponseDto;
 import deepstream.ttrack.dto.overview.ChartOverviewDto;
@@ -30,7 +29,7 @@ public interface OrderService {
 
     List<OrderResponseDto> getAllOrderByFilter(DateRangeDto dateRangeDto);
 
-    ResponseJson<OrderResponseDto> checkOrder(String phoneNumber);
+    OrderResponseDto checkOrder(String phoneNumber);
 
     OrderResponseDto getOrder(int id);
 }

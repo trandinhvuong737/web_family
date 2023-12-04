@@ -51,55 +51,61 @@ public class OrderServiceIml implements OrderService {
 
     @Override
     public void addNewOrder(OrderRequestDto orderRequest) {
-        String username = WebUtils.getUsername();
-        User user = userRepository.findByUsername(username).orElseThrow(
-                () -> new BadRequestException(
-                        new SysError(Errors.ERROR_USER_NOT_FOUND, new ErrorParam(Errors.USERNAME)))
-        );
+        OrderResponseDto orderResponseDto = checkOrder(orderRequest.getPhoneNumber());
+        if (ObjectUtils.isNotEmpty(orderResponseDto)) {
+            String username = WebUtils.getUsername();
+            User user = userRepository.findByUsername(username).orElseThrow(
+                    () -> new BadRequestException(
+                            new SysError(Errors.ERROR_USER_NOT_FOUND, new ErrorParam(Errors.USERNAME)))
+            );
 
-        if (!Status.getDisplayNames().contains(orderRequest.getStatus())) {
-            throw new BadRequestException(
-                    new SysError(Errors.ERROR_STATUS_FALSE, new ErrorParam(Errors.STATUS)));
+            if (!Status.getDisplayNames().contains(orderRequest.getStatus())) {
+                throw new BadRequestException(
+                        new SysError(Errors.ERROR_STATUS_FALSE, new ErrorParam(Errors.STATUS)));
+            }
+
+            Order order = new Order();
+            order.setUser(user);
+            order.setAddress(orderRequest.getAddress());
+            order.setCustomer(orderRequest.getCustomer());
+            order.setProduct(orderRequest.getProductName());
+            order.setCreateAt(LocalDateTime.now(ZoneId.of(ASIA_HO_CHI_MINH)));
+            order.setPhoneNumber(orderRequest.getPhoneNumber());
+            order.setQuantity(orderRequest.getQuantity());
+            order.setStatus(orderRequest.getStatus());
+            order.setDiscountCode(orderRequest.getDiscountCode());
+            orderRepository.save(order);
         }
-
-        Order order = new Order();
-        order.setUser(user);
-        order.setAddress(orderRequest.getAddress());
-        order.setCustomer(orderRequest.getCustomer());
-        order.setProduct(orderRequest.getProductName());
-        order.setCreateAt(LocalDateTime.now(ZoneId.of(ASIA_HO_CHI_MINH)));
-        order.setPhoneNumber(orderRequest.getPhoneNumber());
-        order.setQuantity(orderRequest.getQuantity());
-        order.setStatus(orderRequest.getStatus());
-        order.setDiscountCode(orderRequest.getDiscountCode());
-        orderRepository.save(order);
     }
 
     @Override
     public void addNewOrderByDate(OrderRequestDto orderRequest, LocalDate date) {
-        checkOrder(orderRequest.getPhoneNumber());
-        String username = WebUtils.getUsername();
-        User user = userRepository.findByUsername(username).orElseThrow(
-                () -> new BadRequestException(
-                        new SysError(Errors.ERROR_USER_NOT_FOUND, new ErrorParam(Errors.USERNAME)))
-        );
+        OrderResponseDto orderResponseDto = checkOrder(orderRequest.getPhoneNumber());
+        if (ObjectUtils.isNotEmpty(orderResponseDto)){
+            String username = WebUtils.getUsername();
+            User user = userRepository.findByUsername(username).orElseThrow(
+                    () -> new BadRequestException(
+                            new SysError(Errors.ERROR_USER_NOT_FOUND, new ErrorParam(Errors.USERNAME)))
+            );
 
-        if (!Status.getDisplayNames().contains(orderRequest.getStatus())) {
-            throw new BadRequestException(
-                    new SysError(Errors.ERROR_STATUS_FALSE, new ErrorParam(Errors.STATUS)));
+            if (!Status.getDisplayNames().contains(orderRequest.getStatus())) {
+                throw new BadRequestException(
+                        new SysError(Errors.ERROR_STATUS_FALSE, new ErrorParam(Errors.STATUS)));
+            }
+
+            Order order = new Order();
+            order.setUser(user);
+            order.setAddress(orderRequest.getAddress());
+            order.setCustomer(orderRequest.getCustomer());
+            order.setProduct(orderRequest.getProductName());
+            order.setCreateAt(date.atStartOfDay());
+            order.setPhoneNumber(orderRequest.getPhoneNumber());
+            order.setQuantity(orderRequest.getQuantity());
+            order.setStatus(orderRequest.getStatus());
+            order.setDiscountCode(orderRequest.getDiscountCode());
+            orderRepository.save(order);
         }
 
-        Order order = new Order();
-        order.setUser(user);
-        order.setAddress(orderRequest.getAddress());
-        order.setCustomer(orderRequest.getCustomer());
-        order.setProduct(orderRequest.getProductName());
-        order.setCreateAt(date.atStartOfDay());
-        order.setPhoneNumber(orderRequest.getPhoneNumber());
-        order.setQuantity(orderRequest.getQuantity());
-        order.setStatus(orderRequest.getStatus());
-        order.setDiscountCode(orderRequest.getDiscountCode());
-        orderRepository.save(order);
     }
 
     @Override
@@ -301,7 +307,7 @@ public class OrderServiceIml implements OrderService {
     }
 
     @Override
-    public ResponseJson<OrderResponseDto> checkOrder(String phoneNumber) {
+    public OrderResponseDto checkOrder(String phoneNumber) {
 
         String username = WebUtils.getUsername();
         User user = userRepository.findByUsername(username).orElseThrow(
@@ -336,7 +342,7 @@ public class OrderServiceIml implements OrderService {
             }
         }
 
-        return new ResponseJson<>(orderResponseDto, HttpStatus.OK, Constant.SUCCESS);
+        return orderResponseDto;
     }
 
     @Override
