@@ -9,7 +9,8 @@ import java.util.List;
 public enum Status {
     PENDING("pending"),
     COMPLETED("completed"),
-    CANCELED("canceled");
+    CANCELED("canceled"),
+    INITIALIZATION("initialization");
 
     private final String displayName;
 

@@ -1,6 +1,7 @@
 package deepstream.ttrack.service;
 
 import deepstream.ttrack.dto.DateRangeDto;
+import deepstream.ttrack.dto.misscall.MissCallResponse;
 import deepstream.ttrack.dto.order.OrderRequestDto;
 import deepstream.ttrack.dto.order.OrderResponseDto;
 import deepstream.ttrack.dto.overview.ChartOverviewDto;
@@ -14,6 +15,8 @@ public interface OrderService {
     public void addNewOrder(OrderRequestDto orderRequest);
 
     void addNewOrderByDate(OrderRequestDto orderRequest, LocalDate date);
+
+    MissCallResponse addNewOrderByMissCall();
 
     public void updateOrder(int orderId, OrderRequestDto orderRequest);
 

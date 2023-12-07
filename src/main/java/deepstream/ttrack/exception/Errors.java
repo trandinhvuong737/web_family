@@ -10,6 +10,7 @@ public class Errors {
      * Define Error Param
      */
     public static final String ERROR_USER_NOT_FOUND = "người dùng không tìm thấy";
+    public static final String NO_MISSED_CALLS = "không có cuộc gọi nhỡ";
     public static final String ERROR_ORDER_NOT_FOUND = "Không tìm thấy đơn hàng";
     public static final String ERROR_ROLE_NOT_FOUND = "không tìm thấy vai trò";
     public static final String ERROR_STATUS_FALSE = "lỗi trạng thái sai";
@@ -21,6 +22,7 @@ public class Errors {
     public static final String ERROR_EMAIL_NOT_FOUND = "email đã tồn tại trong dử liệu";
     public static final String ERROR_USER_NAME_OR_PASSWORD_NOT_FOUND = "tên người dùng hoặc mật khẩu không tìm thấy";
     public static final String USERNAME = "tên tài khoản";
+    public static final String MISS_CALL = "cuộc gọi nhỡ";
     public static final String PHONE_NUMBER = "số điện thoại";
     public static final String ID = "id";
     public static final String ORDER_ID = "order-id";

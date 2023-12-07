@@ -58,7 +58,8 @@ public class WebSecurityConfiguration {
             "/v3/api-docs/**",
             "/swagger-ui/**",
             "/user/register",
-            "/user/login"
+            "/user/login",
+            "/api/call-information/**"
     };
 
     @Bean

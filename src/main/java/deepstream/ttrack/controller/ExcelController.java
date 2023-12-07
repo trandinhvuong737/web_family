@@ -6,7 +6,6 @@ import deepstream.ttrack.dto.ResponseJson;
 import deepstream.ttrack.service.ExcelService;
 import lombok.AllArgsConstructor;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,9 +38,9 @@ public class ExcelController {
 
     @PostMapping("/import-file-excel")
     @PreAuthorize("hasAnyRole('ROLE_SUPER_ADMIN','ROLE_ADMIN')")
-    public ResponseEntity<ResponseJson> importFileExcel(@RequestBody List<String> listPhoneNumber){
+    public ResponseEntity<ResponseJson<Boolean>> importFileExcel(@RequestBody List<String> listPhoneNumber){
         excelService.updateStatusByListPhone(listPhoneNumber);
         return ResponseEntity.ok().body(
-                new ResponseJson<>(HttpStatus.OK, Constant.SUCCESS));
+                new ResponseJson<>(true,HttpStatus.OK, Constant.SUCCESS));
     }
 }

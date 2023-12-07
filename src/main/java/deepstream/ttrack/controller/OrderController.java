@@ -3,6 +3,7 @@ package deepstream.ttrack.controller;
 import deepstream.ttrack.common.constant.Constant;
 import deepstream.ttrack.dto.DateRangeDto;
 import deepstream.ttrack.dto.ResponseJson;
+import deepstream.ttrack.dto.misscall.MissCallResponse;
 import deepstream.ttrack.dto.order.OrderRequestDto;
 import deepstream.ttrack.dto.order.OrderResponseDto;
 import deepstream.ttrack.service.OrderService;
@@ -41,6 +42,15 @@ public class OrderController {
         orderService.addNewOrderByDate(orderRequestDto, date);
         return ResponseEntity.ok().body(
                 new ResponseJson<>(true, HttpStatus.OK, Constant.ADD_ORDER_SUCCESS));
+
+    }
+
+    @PostMapping("/new-order-miss-call")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ResponseJson<MissCallResponse>> addNewOrderByMissCall() {
+        MissCallResponse missCallResponse = orderService.addNewOrderByMissCall();
+        return ResponseEntity.ok().body(
+                new ResponseJson<>(missCallResponse, HttpStatus.OK, Constant.SUCCESS));
 
     }
 

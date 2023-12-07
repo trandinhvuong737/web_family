@@ -44,8 +44,7 @@ public class ExcelServiceIml implements ExcelService{
         veryfilecode(dateRangeDto);
         LocalDateTime startDate = dateRangeDto.getStartDate().atStartOfDay();
         LocalDateTime endDate = dateRangeDto.getEndDate().atTime(23,59,59);
-        List<Order> orders;
-        orders = orderRepository.getOrdersByStatusEx(startDate,endDate);
+        List<Order> orders = orderRepository.getOrdersByStatusEx(startDate,endDate);
 
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Sheet 1");
