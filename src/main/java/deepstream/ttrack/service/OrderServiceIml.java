@@ -157,7 +157,8 @@ public class OrderServiceIml implements OrderService {
                 () -> new BadRequestException(
                         new SysError(Errors.ERROR_ORDER_NOT_FOUND, new ErrorParam(Errors.ORDER_ID)))
         );
-        if(Status.getDisplayNames().contains(orderRequest.getStatus())){
+        String status = orderRequest.getStatus().toLowerCase();
+        if(!Status.getDisplayNames().contains(status)){
             throw new BadRequestException(
                     new SysError(Errors.ERROR_STATUS_FALSE, new ErrorParam(Errors.STATUS)));
         }
