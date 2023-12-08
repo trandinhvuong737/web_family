@@ -209,7 +209,7 @@ public class OrderServiceIml implements OrderService {
                     responseDto.setDiscountCode(order.getDiscountCode());
                     responseDto.setQuantity(order.getQuantity());
                     responseDto.setCreateAt(order.getCreateAt());
-                    responseDto.setUserName(username);
+                    responseDto.setUserName(order.getUser().getUsername());
                     return responseDto;
                 })
                 .forEach(orderResponse::add);
@@ -240,11 +240,13 @@ public class OrderServiceIml implements OrderService {
         );
         LocalDateTime startDate = dateRange.getStartDate().atStartOfDay();
         LocalDateTime endDate = dateRange.getEndDate().atTime(23,59,59);
+
         OverviewDto overview = new OverviewDto();
         int totalProduct = 0;
         int totalOrder;
         long totalAmount = 0;
         long totalTransportFee = 0L;
+
         List<Order> orders;
         int roleId = user.getRole().getRoleId();
         if( roleId == SUPER_ADMIN_ID || roleId == ADMIN_ID ){

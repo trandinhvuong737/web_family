@@ -62,7 +62,7 @@ public interface OrderRepository extends JpaRepository<Order,Integer> {
             "ORDER BY o.createAt DESC")
     List<Order> getOrderByDateRangeAndUsername(LocalDateTime startDate, LocalDateTime endDate, String username);
 
-    @Query("SELECT o FROM Order o WHERE o.createAt <= :startDate AND o.createAt >= :endDate AND o.status != 'initialization'" +
+    @Query("SELECT o FROM Order o WHERE o.createAt <= :startDate AND o.createAt >= :endDate AND o.status != 'initialization' " +
             "ORDER BY o.createAt DESC ")
     List<Order> getOrderByDateRangeAndUsername(LocalDateTime startDate, LocalDateTime endDate);
 
