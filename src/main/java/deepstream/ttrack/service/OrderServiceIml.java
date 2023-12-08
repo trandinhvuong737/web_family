@@ -243,7 +243,6 @@ public class OrderServiceIml implements OrderService {
 
         OverviewDto overview = new OverviewDto();
         int totalProduct = 0;
-        int totalOrder;
         long totalAmount = 0;
         long totalTransportFee = 0L;
 
@@ -261,7 +260,7 @@ public class OrderServiceIml implements OrderService {
             totalAmount += (long) (order.getQuantity() * product.getUnitPrice());
             totalTransportFee += (long) order.getQuantity() * product.getTransportFee();
         }
-        totalOrder = orders.size();
+        int totalOrder = orders.size();
         overview.setTotalOrder(totalOrder);
         overview.setTotalProduct(totalProduct);
         overview.setTotalAmount(totalAmount);

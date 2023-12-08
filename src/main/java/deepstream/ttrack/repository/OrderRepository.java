@@ -57,12 +57,12 @@ public interface OrderRepository extends JpaRepository<Order,Integer> {
     @Query("SELECT o FROM Order o WHERE o.phoneNumber = :phoneNumber and o.product = :productName")
     List<Order> getOrderByPhoneNumber(String phoneNumber, String productName);
 
-    @Query("SELECT o FROM Order o WHERE o.createAt <= :startDate AND o.createAt >= :endDate " +
+    @Query("SELECT o FROM Order o WHERE o.createAt >= :startDate AND o.createAt <= :endDate " +
             "AND o.status != 'initialization' AND o.user.username = :username " +
             "ORDER BY o.createAt DESC")
     List<Order> getOrderByDateRangeAndUsername(LocalDateTime startDate, LocalDateTime endDate, String username);
 
-    @Query("SELECT o FROM Order o WHERE o.createAt <= :startDate AND o.createAt >= :endDate AND o.status != 'initialization' " +
+    @Query("SELECT o FROM Order o WHERE o.createAt >= :startDate AND o.createAt <= :endDate AND o.status != 'initialization' " +
             "ORDER BY o.createAt DESC ")
     List<Order> getOrderByDateRangeAndUsername(LocalDateTime startDate, LocalDateTime endDate);
 
