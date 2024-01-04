@@ -8,7 +8,7 @@ import deepstream.ttrack.dto.order.OrderRequestDto;
 import deepstream.ttrack.dto.order.OrderResponseDto;
 import deepstream.ttrack.dto.overview.ChartOverviewDto;
 import deepstream.ttrack.dto.overview.OverviewDto;
-import deepstream.ttrack.entity.MissedCall;
+import deepstream.ttrack.entity.CallHistory;
 import deepstream.ttrack.entity.Order;
 import deepstream.ttrack.entity.Product;
 import deepstream.ttrack.entity.User;
@@ -114,16 +114,16 @@ public class OrderServiceIml implements OrderService {
 
     @Override
     public MissCallResponse addNewOrderByMissCall() {
-        List<MissedCall> missedCalls = callDataWebhookService.getAllMissCall();
-        if (missedCalls.isEmpty()){
+        List<CallHistory> callHistories = callDataWebhookService.getAllMissCall();
+        if (callHistories.isEmpty()){
             throw new BadRequestException(
                     new SysError(Errors.NO_MISSED_CALLS, new ErrorParam(Errors.MISS_CALL)));
         }
         MissCallResponse missCallResponse = new MissCallResponse();
-        for (MissedCall missedCall : missedCalls) {
-            if(checkOrderMissCall(missedCall.getSourceNumber())){
-                missedCall.setStatus(true);
-                callDataWebhookRepository.save(missedCall);
+        for (CallHistory callHistory : callHistories) {
+            if(checkOrderMissCall(callHistory.getCallerPhone())){
+                callHistory.setStatus(true);
+                callDataWebhookRepository.save(callHistory);
             } else {
                 String username = WebUtils.getUsername();
                 User user = userRepository.findByUsername(username).orElseThrow(
@@ -131,13 +131,13 @@ public class OrderServiceIml implements OrderService {
                                 new SysError(Errors.ERROR_USER_NOT_FOUND, new ErrorParam(Errors.USERNAME)))
                 );
                 Order order = new Order();
-                order.setPhoneNumber(missedCall.getSourceNumber());
+                order.setPhoneNumber(callHistory.getCallerPhone());
                 order.setStatus(Status.INITIALIZATION.getDisplayName());
                 order.setCreateAt(LocalDateTime.now(ZoneId.of(ASIA_HO_CHI_MINH)));
                 order.setUser(user);
                 Order savedOrder = orderRepository.save(order);
-                missedCall.setStatus(true);
-                callDataWebhookRepository.save(missedCall);
+                callHistory.setStatus(true);
+                callDataWebhookRepository.save(callHistory);
                 int totalMissCall = callDataWebhookRepository.getTotalMissCall();
                 missCallResponse.setMissCallId(savedOrder.getOrderId());
                 missCallResponse.setTotalMissCall(totalMissCall);
@@ -376,7 +376,8 @@ public class OrderServiceIml implements OrderService {
             List<Order> orders = orderRepository.getOrderByPhoneNumber(phoneNumber, product.getProductName());
             if (!orders.isEmpty()) {
                 for (Order order : orders) {
-                    if (order.getStatus().toLowerCase().equals(Status.PENDING.getDisplayName())) {
+                    String status = order.getStatus().toLowerCase();
+                    if (status.equals(Status.PENDING.getDisplayName()) || status.equals(Status.INITIALIZATION.getDisplayName())){
                         throw new BadRequestException(
                                 new SysError("Đã tồn tại đơn hàng với tên: "
                                         .concat(order.getCustomer())

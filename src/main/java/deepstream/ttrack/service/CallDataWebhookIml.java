@@ -2,10 +2,12 @@ package deepstream.ttrack.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import deepstream.ttrack.dto.calldatawebhook.CallDTO;
-import deepstream.ttrack.entity.MissedCall;
+import deepstream.ttrack.dto.calldatawebhook.Hotline;
+import deepstream.ttrack.entity.CallHistory;
 import deepstream.ttrack.model.MissedCallModel;
 import deepstream.ttrack.model.TokenModel;
 import deepstream.ttrack.repository.CallDataWebhookRepository;
+import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -32,19 +35,33 @@ public class CallDataWebhookIml implements CallDataWebhookService{
     }
 
     @Override
-    public void addCallInformation(String id, CallDTO callDTO){
-        MissedCall missedCall = new MissedCall();
-        missedCall.setTransactionId(id);
-        missedCall.setDirection(callDTO.getDirection());
-        missedCall.setDestinationNumber(callDTO.getDestinationNumber());
-        missedCall.setCreatedDate(callDTO.getCreatedDate());
-        missedCall.setSourceNumber(callDTO.getSourceNumber());
-        missedCall.setStatus(false);
-        callDataWebhookRepository.save(missedCall);
+    public void addCallInformation(CallDTO callDTO){
+        if (callDTO.getData().get(0).getTypeCall().equals("MISSCALL")) {
+            CallHistory callHistory = new CallHistory();
+            Hotline hotline = callDTO.getData().get(0);
+
+            String timeFormat = "MM/dd/yyyy HH:mm:ss";
+            DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(timeFormat);
+            LocalDateTime localDateTime = LocalDateTime.parse(hotline.getDateCreate(), dateTimeFormatter);
+            long milliseconds = localDateTime.atZone(ZoneId.of(ASIA_HO_CHI_MINH)).toInstant().toEpochMilli();
+
+            callHistory.setTypeCall(hotline.getTypeCall());
+            callHistory.setStatus(false);
+            callHistory.setCreatedDate(milliseconds);
+            callHistory.setDisposition(hotline.getDisposition());
+            callHistory.setCallerPhone(hotline.getCaller().get(0).getPhone());
+            if (ObjectUtils.isNotEmpty(hotline.getCallee())) {
+                callHistory.setCallerPhone(hotline.getCaller().get(0).getPhone());
+            }
+            callHistory.setStatus(false);
+            callHistory.setHotlineNumber(hotline.getHotlineNumber());
+            callDataWebhookRepository.save(callHistory);
+        }
+
     }
 
     @Override
-    public List<MissedCall> getAllMissCall(){
+    public List<CallHistory> getAllMissCall(){
         return callDataWebhookRepository.findAllMissCall();
     }
 

@@ -14,7 +14,7 @@ public interface OrderService {
 
     public void addNewOrder(OrderRequestDto orderRequest);
 
-    void addNewOrderByDate(OrderRequestDto orderRequest, LocalDate date);
+    public void addNewOrderByDate(OrderRequestDto orderRequest, LocalDate date);
 
     MissCallResponse addNewOrderByMissCall();
 
@@ -24,7 +24,7 @@ public interface OrderService {
 
     public List<OrderResponseDto> getAllOrder();
 
-    void updateStatus(int orderId, String status);
+    public void updateStatus(int orderId, String status);
 
     OverviewDto getOverview(DateRangeDto dateRange);
 

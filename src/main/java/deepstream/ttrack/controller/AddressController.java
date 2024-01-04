@@ -3,7 +3,6 @@ package deepstream.ttrack.controller;
 import deepstream.ttrack.common.constant.Constant;
 import deepstream.ttrack.dto.ResponseJson;
 import deepstream.ttrack.service.AddressService;
-import deepstream.ttrack.service.OrderServiceIml;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,7 +20,7 @@ import java.util.List;
 @RequestMapping("/api/address")
 @AllArgsConstructor
 public class AddressController {
-    private static final Logger logger = LoggerFactory.getLogger(OrderServiceIml.class);
+    private static final Logger logger = LoggerFactory.getLogger(AddressController.class);
     private final AddressService addressService;
 
     @GetMapping("/get-all-province")

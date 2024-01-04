@@ -51,9 +51,6 @@ public interface OrderRepository extends JpaRepository<Order,Integer> {
             "o.createAt between :startDate and :endDate order by o.createAt DESC")
     List<Order> getOrdersByStatusEx(LocalDateTime startDate, LocalDateTime endDate);
 
-//    @Query("SELECT o FROM Order o WHERE o.status = 'pending' and o.createAt between :startDate and :endDate and o.product = :productName")
-//    List<Order> getOrdersByStatusEx(LocalDate startDate, LocalDate endDate, String productName );
-
     @Query("SELECT o FROM Order o WHERE o.phoneNumber = :phoneNumber and o.product = :productName")
     List<Order> getOrderByPhoneNumber(String phoneNumber, String productName);
 

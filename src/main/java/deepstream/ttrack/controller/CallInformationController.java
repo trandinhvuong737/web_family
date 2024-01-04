@@ -4,7 +4,7 @@ import deepstream.ttrack.common.constant.Constant;
 import deepstream.ttrack.dto.ResponseJson;
 import deepstream.ttrack.dto.calldatawebhook.CallDTO;
 
-import deepstream.ttrack.entity.MissedCall;
+import deepstream.ttrack.entity.CallHistory;
 import deepstream.ttrack.service.CallDataWebhookService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,11 +20,10 @@ import java.util.List;
 public class CallInformationController {
 
     private final CallDataWebhookService callDataWebhookService;
-    @PostMapping("/{id}")
+    @PostMapping("/")
     @PreAuthorize("permitAll()")
-    public ResponseEntity<ResponseJson<Boolean>> addCallInformation(@PathVariable String id,
-                                                              @RequestBody CallDTO callDTO) {
-        callDataWebhookService.addCallInformation(id, callDTO);
+    public ResponseEntity<ResponseJson<Boolean>> addCallInformation(@RequestBody CallDTO callDTO) {
+        callDataWebhookService.addCallInformation(callDTO);
         return ResponseEntity.ok().body(
                 new ResponseJson<>(true, HttpStatus.OK, Constant.SUCCESS));
 
@@ -32,10 +31,10 @@ public class CallInformationController {
 
     @GetMapping("/")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ResponseJson<List<MissedCall>>> getAllMissCall() {
-        List<MissedCall> missedCalls = callDataWebhookService.getAllMissCall();
+    public ResponseEntity<ResponseJson<List<CallHistory>>> getAllMissCall() {
+        List<CallHistory> callHistories = callDataWebhookService.getAllMissCall();
         return ResponseEntity.ok().body(
-                new ResponseJson<>(missedCalls, HttpStatus.OK, Constant.SUCCESS));
+                new ResponseJson<>(callHistories, HttpStatus.OK, Constant.SUCCESS));
 
     }
 }

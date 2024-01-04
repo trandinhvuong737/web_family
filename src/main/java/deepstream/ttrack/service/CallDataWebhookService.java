@@ -1,12 +1,12 @@
 package deepstream.ttrack.service;
 
 import deepstream.ttrack.dto.calldatawebhook.CallDTO;
-import deepstream.ttrack.entity.MissedCall;
+import deepstream.ttrack.entity.CallHistory;
 
 import java.util.List;
 
 public interface CallDataWebhookService {
-    void addCallInformation(String id, CallDTO callDTO);
+    void addCallInformation(CallDTO callDTO);
 
-    List<MissedCall> getAllMissCall();
+    List<CallHistory> getAllMissCall();
 }
