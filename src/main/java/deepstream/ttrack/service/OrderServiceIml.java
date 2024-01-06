@@ -55,6 +55,7 @@ public class OrderServiceIml implements OrderService {
 
     @Override
     public void addNewOrder(OrderRequestDto orderRequest) {
+        logger.info("addNewOrder");
         OrderResponseDto orderResponseDto = checkOrder(orderRequest.getPhoneNumber());
         if (ObjectUtils.isNotEmpty(orderResponseDto)) {
             String username = WebUtils.getUsername();
@@ -84,6 +85,7 @@ public class OrderServiceIml implements OrderService {
 
     @Override
     public void addNewOrderByDate(OrderRequestDto orderRequest, LocalDate date) {
+        logger.info("addNewOrderByDate");
         OrderResponseDto orderResponseDto = checkOrder(orderRequest.getPhoneNumber());
         if (ObjectUtils.isNotEmpty(orderResponseDto)){
             String username = WebUtils.getUsername();
@@ -114,6 +116,7 @@ public class OrderServiceIml implements OrderService {
 
     @Override
     public MissCallResponse addNewOrderByMissCall() {
+        logger.info("addNewOrderByMissCall");
         List<CallHistory> callHistories = callDataWebhookService.getAllMissCall();
         if (callHistories.isEmpty()){
             throw new BadRequestException(
@@ -153,6 +156,7 @@ public class OrderServiceIml implements OrderService {
 
     @Override
     public void updateOrder(int orderId, OrderRequestDto orderRequest) {
+        logger.info("updateOrder");
         Order order = orderRepository.findById(orderId).orElseThrow(
                 () -> new BadRequestException(
                         new SysError(Errors.ERROR_ORDER_NOT_FOUND, new ErrorParam(Errors.ORDER_ID)))
@@ -174,6 +178,7 @@ public class OrderServiceIml implements OrderService {
 
     @Override
     public void deleteOrder(int id) {
+        logger.info("deleteOrder");
         Order order = orderRepository.findById(id).orElseThrow(
                 () -> new BadRequestException(
                         new SysError(Errors.ERROR_USER_NOT_FOUND, new ErrorParam(Errors.ID)))
@@ -183,6 +188,7 @@ public class OrderServiceIml implements OrderService {
 
     @Override
     public List<OrderResponseDto> getAllOrder() {
+        logger.info("getAllOrder");
         String username = WebUtils.getUsername();
         User user = userRepository.findByUsername(username).orElseThrow(
                 () -> new BadRequestException(
@@ -218,6 +224,7 @@ public class OrderServiceIml implements OrderService {
 
     @Override
     public void updateStatus(int orderId, String status) {
+        logger.info("updateStatus");
         Order order = orderRepository.findById(orderId).orElseThrow(
                 () -> new BadRequestException(
                         new SysError(Errors.ERROR_ORDER_NOT_FOUND, new ErrorParam(Errors.ORDER_ID)))
@@ -233,6 +240,7 @@ public class OrderServiceIml implements OrderService {
 
     @Override
     public OverviewDto getOverview(DateRangeDto dateRange) {
+        logger.info("getOverview");
         String username = WebUtils.getUsername();
         User user = userRepository.findByUsername(username).orElseThrow(
                 () -> new BadRequestException(
@@ -271,6 +279,7 @@ public class OrderServiceIml implements OrderService {
 
     @Override
     public List<ChartOverviewDto> getChartOverview() {
+        logger.info("getChartOverview");
         String username = WebUtils.getUsername();
         User user = userRepository.findByUsername(username).orElseThrow(
                 () -> new BadRequestException(
@@ -324,6 +333,7 @@ public class OrderServiceIml implements OrderService {
 
     @Override
     public List<OrderResponseDto> getAllOrderByFilter(DateRangeDto dateRangeDto) {
+        logger.info("getAllOrderByFilter");
         String username = WebUtils.getUsername();
         User user = userRepository.findByUsername(username).orElseThrow(
                 () -> new BadRequestException(
@@ -355,7 +365,7 @@ public class OrderServiceIml implements OrderService {
 
     @Override
     public OrderResponseDto checkOrder(String phoneNumber) {
-
+        logger.info("checkOrder");
         String username = WebUtils.getUsername();
         User user = userRepository.findByUsername(username).orElseThrow(
                 () -> new BadRequestException(
@@ -395,6 +405,7 @@ public class OrderServiceIml implements OrderService {
 
     @Override
     public OrderResponseDto getOrder(int id) {
+        logger.info("getOrder");
         Order order = orderRepository.getOrderByOrderId(id);
         if(ObjectUtils.isEmpty(order)){
             throw new BadRequestException(
