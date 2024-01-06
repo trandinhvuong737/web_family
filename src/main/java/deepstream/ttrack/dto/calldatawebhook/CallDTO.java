@@ -12,5 +12,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CallDTO {
-    private List<Hotline> data;
+    private Hotline data;
+    private long time;
+    private String eventData;
 }

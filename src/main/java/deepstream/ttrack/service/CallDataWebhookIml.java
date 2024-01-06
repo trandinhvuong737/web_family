@@ -37,9 +37,9 @@ public class CallDataWebhookIml implements CallDataWebhookService{
 
     @Override
     public void addCallInformation(CallDTO callDTO){
-        if (MISSCALL.equalsIgnoreCase(callDTO.getData().get(0).getTypeCall())) {
+        if (MISSCALL.equalsIgnoreCase(callDTO.getData().getTypeCall())) {
             CallHistory callHistory = new CallHistory();
-            Hotline hotline = callDTO.getData().get(0);
+            Hotline hotline = callDTO.getData();
 
             String timeFormat = "MM/dd/yyyy HH:mm:ss";
             DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(timeFormat);

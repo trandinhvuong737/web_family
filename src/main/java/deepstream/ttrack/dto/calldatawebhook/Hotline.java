@@ -24,7 +24,7 @@ public class Hotline {
     @JsonProperty("disposition")
     private String disposition;
     @JsonProperty("record_file")
-    private String[] recordFiles;
+    private List<String> recordFiles;
     @JsonProperty("caller")
     private List<Caller> caller;
     @JsonProperty("callee")
