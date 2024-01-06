@@ -46,7 +46,7 @@ public class CallDataWebhookIml implements CallDataWebhookService{
             LocalDateTime localDateTime = LocalDateTime.parse(hotline.getDateCreate(), dateTimeFormatter);
             long milliseconds = localDateTime.atZone(ZoneId.of(ASIA_HO_CHI_MINH)).toInstant().toEpochMilli();
 
-            callHistory.setTypeCall(hotline.getTypeCall());
+            callHistory.setTypeCall(hotline.getTypeCall().toUpperCase());
             callHistory.setStatus(false);
             callHistory.setCreatedDate(milliseconds);
             callHistory.setDisposition(hotline.getDisposition());
