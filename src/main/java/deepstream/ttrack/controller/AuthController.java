@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -56,10 +58,14 @@ public class AuthController {
 
     private final PasswordEncoder encoder;
 
+    private static final Logger logger = LoggerFactory.getLogger(AuthController.class);
+
+
 
     @PostMapping("/signin")
     @PreAuthorize("permitAll()")
     public ResponseEntity<ResponseJson<JwtResponse>> authenticateUser(@Validated @RequestBody LoginRequest loginRequest) {
+        logger.info("authenticateUser");
         if (!userRepository.existsByUsername(loginRequest.getUsername())) {
             throw new BadRequestException(
                     new SysError(Errors.ERROR_USER_NAME_OR_PASSWORD_NOT_FOUND, new ErrorParam(Errors.USER)));
