@@ -24,6 +24,7 @@ import java.util.List;
 public class CallDataWebhookIml implements CallDataWebhookService{
 
     public static final String ASIA_HO_CHI_MINH = "Asia/Ho_Chi_Minh";
+    public static final String MISSCALL = "misscall";
     private final CallDataWebhookRepository callDataWebhookRepository;
     private final WebClient webClient;
     private final ObjectMapper objectMapper;
@@ -36,7 +37,7 @@ public class CallDataWebhookIml implements CallDataWebhookService{
 
     @Override
     public void addCallInformation(CallDTO callDTO){
-        if (callDTO.getData().get(0).getTypeCall().equals("MISSCALL")) {
+        if (MISSCALL.equalsIgnoreCase(callDTO.getData().get(0).getTypeCall())) {
             CallHistory callHistory = new CallHistory();
             Hotline hotline = callDTO.getData().get(0);
 
