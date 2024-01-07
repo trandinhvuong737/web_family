@@ -43,4 +43,14 @@ public class CallInformationController {
                 new ResponseJson<>(callHistories, HttpStatus.OK, Constant.SUCCESS));
 
     }
+
+    @PostMapping("/total-miss-call")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<ResponseJson<Integer>> totalMissCall() {
+        logger.info("totalMissCall");
+        Integer totalCall = callDataWebhookService.totalMissCall();
+        return ResponseEntity.ok().body(
+                new ResponseJson<>(totalCall, HttpStatus.OK, Constant.SUCCESS));
+
+    }
 }

@@ -9,4 +9,6 @@ public interface CallDataWebhookService {
     void addCallInformation(CallDTO callDTO);
 
     List<CallHistory> getAllMissCall();
+
+    Integer totalMissCall();
 }
