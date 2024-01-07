@@ -44,7 +44,7 @@ public class CallInformationController {
 
     }
 
-    @PostMapping("/total-miss-call")
+    @GetMapping("/total-miss-call")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ResponseJson<Integer>> totalMissCall() {
         logger.info("totalMissCall");
