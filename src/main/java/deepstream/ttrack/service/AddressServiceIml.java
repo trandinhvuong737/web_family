@@ -3,85 +3,82 @@ package deepstream.ttrack.service;
 import deepstream.ttrack.exception.BadRequestException;
 import deepstream.ttrack.exception.ErrorParam;
 import deepstream.ttrack.exception.SysError;
+import deepstream.ttrack.dto.CityDto;
+import deepstream.ttrack.dto.DistrictDto;
+import deepstream.ttrack.dto.WardDto;
 import deepstream.ttrack.model.CityModel;
 import deepstream.ttrack.model.DistrictModel;
 import deepstream.ttrack.model.WardModel;
 import org.apache.commons.lang3.ObjectUtils;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.netty.http.client.HttpClient;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class AddressServiceIml implements AddressService {
-    public static final String API_DEPTH_3 = "https://provinces.open-api.vn/api/?depth=3";
+    public static final String API_PROVINCE = "https://vapi.vnappmob.com/api/province/";
     public static final String LIST_NULL = "Danh sách rỗng";
     private final WebClient webClient;
 
     public AddressServiceIml() {
-        this.webClient = WebClient.create("");
+        this.webClient = WebClient.builder()
+                .baseUrl(API_PROVINCE)
+                .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
+                .clientConnector(new ReactorClientHttpConnector(HttpClient.create().followRedirect(true)))
+                .build();
     }
 
     @Override
     @Cacheable(value = "getAllCity")
-    public List<String> getAllCity() {
-        List<CityModel> response = webClient.get()
-                .uri(API_DEPTH_3)
+    public List<CityDto> getAllCity() {
+        CityModel response = webClient.get()
+                .uri(API_PROVINCE)
                 .retrieve()
-                .bodyToFlux(CityModel.class)
-                .collectList()
+                .bodyToMono(CityModel.class)
                 .block();
         if (ObjectUtils.isEmpty(response)) {
             throw new BadRequestException(
                     new SysError(LIST_NULL, new ErrorParam("ward")));
         }
-        return response.stream().map(CityModel::getName)
-                .collect(Collectors.toList());
+        return response.getResults();
 
     }
 
     @Override
-    @Cacheable(value = "getDistrict", key = "#province")
-    public List<String> getDistrict(String province) {
-        List<CityModel> response = webClient.get()
-                .uri(API_DEPTH_3)
+    @Cacheable(value = "getDistrict", key = "#districtId")
+    public List<DistrictDto> getDistrict(String districtId) {
+        DistrictModel response = webClient.get()
+                .uri(API_PROVINCE + "district/" + districtId)
                 .retrieve()
-                .bodyToFlux(CityModel.class)
-                .collectList()
+                .bodyToMono(DistrictModel.class)
                 .block();
         if (ObjectUtils.isEmpty(response)) {
             throw new BadRequestException(
                     new SysError(LIST_NULL, new ErrorParam("district")));
         }
-        return response.stream()
-                .filter(cityModel -> province.equals(cityModel.getName()))
-                .flatMap(cityModel -> cityModel.getDistricts().stream())
-                .map(DistrictModel::getName)
-                .collect(Collectors.toList());
+        return response.getResults();
     }
 
     @Override
-    @Cacheable(value = "getWard", key = "#province + '-' + #districtName")
-    public List<String> getWard(String districtName, String province) {
-        List<CityModel> response = webClient.get()
-                .uri(API_DEPTH_3)
+    @Cacheable(value = "getWard", key = "#districtId")
+    public List<WardDto> getWard(String districtId) {
+        WardModel response = webClient.get()
+                .uri(API_PROVINCE + "ward/" + districtId)
+
                 .retrieve()
-                .bodyToFlux(CityModel.class)
-                .collectList()
+                .bodyToMono(WardModel.class)
                 .block();
         if (ObjectUtils.isEmpty(response)) {
             throw new BadRequestException(
                     new SysError(LIST_NULL, new ErrorParam("ward")));
         }
-        return response.stream()
-                .filter(cityModel -> province.equals(cityModel.getName()))
-                .flatMap(cityModel -> cityModel.getDistricts().stream())
-                .filter(districtTestDTO -> districtName.equals(districtTestDTO.getName()))
-                .flatMap(districtTestDTO -> districtTestDTO.getWards().stream())
-                .map(WardModel::getName)
-                .collect(Collectors.toList());
+        return response.getResults();
     }
 }

@@ -31,4 +31,5 @@ public class CustomAccessDeniedHandler implements AccessDeniedHandler {
         response.getWriter().write("{\"message\": \"Access Denied: You do not have the required role.\"}");
     }
 
+
 }

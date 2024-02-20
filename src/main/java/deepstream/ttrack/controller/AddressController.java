@@ -2,6 +2,9 @@ package deepstream.ttrack.controller;
 
 import deepstream.ttrack.common.constant.Constant;
 import deepstream.ttrack.dto.ResponseJson;
+import deepstream.ttrack.dto.CityDto;
+import deepstream.ttrack.dto.DistrictDto;
+import deepstream.ttrack.dto.WardDto;
 import deepstream.ttrack.service.AddressService;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
@@ -25,30 +28,29 @@ public class AddressController {
 
     @GetMapping("/get-all-province")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ResponseJson<List<String>>> getAllCity() {
+    public ResponseEntity<ResponseJson<List<CityDto>>> getAllCity() {
         logger.info("get-all-province");
-        List<String> cities = addressService.getAllCity();
+        List<CityDto> cities = addressService.getAllCity();
         return ResponseEntity.ok().body(
                 new ResponseJson<>(cities, HttpStatus.OK, Constant.SUCCESS));
 
     }
 
-    @GetMapping("/get-all-District/{province}")
+    @GetMapping("/get-all-District/{provinceId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ResponseJson<List<String>>> getDistrictById(@PathVariable String province) {
+    public ResponseEntity<ResponseJson<List<DistrictDto>>> getDistrictById(@PathVariable String provinceId) {
         logger.info("get-all-District");
-        List<String> districts = addressService.getDistrict(province);
+        List<DistrictDto> districts = addressService.getDistrict(provinceId);
         return ResponseEntity.ok().body(
                 new ResponseJson<>(districts, HttpStatus.OK, Constant.SUCCESS));
 
     }
-    @GetMapping("/get-all-ward/{provinceName}/{districtName}")
+    @GetMapping("/get-all-ward/{districtId}")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ResponseJson<List<String>>> getWard(
-            @PathVariable String provinceName,
-            @PathVariable String districtName ) {
+    public ResponseEntity<ResponseJson<List<WardDto>>> getWard(
+            @PathVariable String districtId ) {
         logger.info("get-all-ward ");
-        List<String> wardResponse = addressService.getWard(districtName, provinceName);
+        List<WardDto> wardResponse = addressService.getWard(districtId);
         return ResponseEntity.ok().body(
                 new ResponseJson<>(wardResponse, HttpStatus.OK, Constant.SUCCESS));
 

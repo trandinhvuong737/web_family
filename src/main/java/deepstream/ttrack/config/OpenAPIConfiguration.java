@@ -24,7 +24,7 @@ public class OpenAPIConfiguration {
                         new SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer")
                                 .bearerFormat("JWT")
                                 .in(SecurityScheme.In.HEADER).name("Authorization")))
-                .info(new Info().title("T-Track Application API").version("snapshot"))
+                .info(new Info().title("Family Application API").version("snapshot"))
                 .addSecurityItem(
                         new SecurityRequirement().addList("JWT", Arrays.asList("read", "write")));
     }

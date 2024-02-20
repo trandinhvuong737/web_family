@@ -1,11 +1,15 @@
 package deepstream.ttrack.service;
 
+import deepstream.ttrack.dto.CityDto;
+import deepstream.ttrack.dto.DistrictDto;
+import deepstream.ttrack.dto.WardDto;
+
 import java.util.List;
 
 public interface AddressService {
-    List<String> getAllCity();
+    List<CityDto> getAllCity();
 
-    List<String> getDistrict(String province);
+    List<DistrictDto> getDistrict(String province);
 
-    List<String> getWard(String districtName, String province);
+    List<WardDto> getWard(String districtId);
 }

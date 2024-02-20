@@ -1,5 +1,6 @@
 package deepstream.ttrack.model;
 
+import deepstream.ttrack.dto.CityDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,11 +13,5 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CityModel {
-
-    private String name;
-    private Integer code;
-    private String codename;
-    private String division_type;
-    private Integer phone_code;
-    private List<DistrictModel> districts;
+    private List<CityDto> results;
 }
