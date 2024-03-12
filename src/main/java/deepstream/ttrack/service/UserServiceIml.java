@@ -106,7 +106,9 @@ public class UserServiceIml implements UserService {
         user.setUsername(userUpdate.getUsername());
         user.setEmail(userUpdate.getEmail() );
         user.setRole(role);
-        user.setProducts(products);
+        if (!(role.getName().equals("admin") || role.getName().equals("super_admin"))) {
+            user.setProducts(products);
+        }
         user.setPassword(encoder.encode(userUpdate.getPassword()));
         userRepository.save(user);
     }
