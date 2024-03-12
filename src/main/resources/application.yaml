@@ -2,6 +2,9 @@ t-track:
     app:
         jwtExpirationMs: '86400000'
         jwtSecret: 'TTrackApp@f31BmUS)&?O!19W:'
+    bot:
+        botUsername: 'Manage_ads_v1_bot'
+        botToken: '6749970740:AAG44yokB3qNtOQoI1Gsdci8eIKB_uAYsI0'
 spring:
     flyway:
         locations: classpath:db-migration

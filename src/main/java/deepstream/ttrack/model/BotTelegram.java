@@ -2,20 +2,28 @@ package deepstream.ttrack.model;
 
 import deepstream.ttrack.common.utils.WebUtils;
 import deepstream.ttrack.entity.Order;
+import org.springframework.beans.factory.annotation.Value;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 public class BotTelegram extends TelegramLongPollingBot {
+
+    @Value("${t-track.bot.botUsername}")
+    private String botUsername;
+
+    @Value("${t-track.bot.botToken}")
+    private String botToken;
+
     @Override
     public String getBotUsername() {
-        return "Manage_ads_v1_bot";
+        return botUsername;
     }
 
     @Override
     public String getBotToken() {
-        return "6749970740:AAG44yokB3qNtOQoI1Gsdci8eIKB_uAYsI0";
+        return botToken;
     }
 
     @Override
