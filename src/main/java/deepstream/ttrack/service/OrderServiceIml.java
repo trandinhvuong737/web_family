@@ -16,6 +16,7 @@ import deepstream.ttrack.exception.BadRequestException;
 import deepstream.ttrack.exception.ErrorParam;
 import deepstream.ttrack.exception.Errors;
 import deepstream.ttrack.exception.SysError;
+import deepstream.ttrack.model.BotTelegram;
 import deepstream.ttrack.repository.CallDataWebhookRepository;
 import deepstream.ttrack.repository.OrderRepository;
 import deepstream.ttrack.repository.ProductRepository;
@@ -36,21 +37,24 @@ public class OrderServiceIml implements OrderService {
     public static final String ASIA_HO_CHI_MINH = "Asia/Ho_Chi_Minh";
     public static final int SUPER_ADMIN_ID = 1;
     public static final int ADMIN_ID = 2;
+    public static final long GROUP_CHAT_ID = -4182617308L;
     private final OrderRepository orderRepository;
     private final UserRepository userRepository;
     private final ProductRepository productRepository;
     private final CallDataWebhookService callDataWebhookService;
     private final CallDataWebhookRepository callDataWebhookRepository;
+    private final BotTelegram botTelegram;
     private static final Logger logger = LoggerFactory.getLogger(OrderServiceIml.class);
 
     public OrderServiceIml(OrderRepository orderRepository,
                            UserRepository userRepository,
-                           ProductRepository productRepository, CallDataWebhookService callDataWebhookService, CallDataWebhookRepository callDataWebhookRepository) {
+                           ProductRepository productRepository, CallDataWebhookService callDataWebhookService, CallDataWebhookRepository callDataWebhookRepository, BotTelegram botTelegram) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.productRepository = productRepository;
         this.callDataWebhookService = callDataWebhookService;
         this.callDataWebhookRepository = callDataWebhookRepository;
+        this.botTelegram = botTelegram;
     }
 
     @Override
@@ -80,6 +84,11 @@ public class OrderServiceIml implements OrderService {
             order.setStatus(orderRequest.getStatus());
             order.setDiscountCode(orderRequest.getDiscountCode());
             orderRepository.save(order);
+            LocalDateTime startDate = LocalDate.now().atStartOfDay();
+            LocalDateTime endDate = LocalDate.now().atTime(23, 59, 59);
+            Integer totalOrders = orderRepository.countOrderByDate(startDate, endDate, username);
+            Integer totalProduct = orderRepository.sumProductByDate(startDate, endDate, username);
+            botTelegram.sendTextAddOder(GROUP_CHAT_ID, order, totalOrders, totalProduct);
         }
     }
 
@@ -87,7 +96,7 @@ public class OrderServiceIml implements OrderService {
     public void addNewOrderByDate(OrderRequestDto orderRequest, LocalDate date) {
         logger.info("addNewOrderByDate");
         OrderResponseDto orderResponseDto = checkOrder(orderRequest.getPhoneNumber());
-        if (ObjectUtils.isNotEmpty(orderResponseDto)){
+        if (ObjectUtils.isNotEmpty(orderResponseDto)) {
             String username = WebUtils.getUsername();
             User user = userRepository.findByUsername(username).orElseThrow(
                     () -> new BadRequestException(
@@ -109,7 +118,11 @@ public class OrderServiceIml implements OrderService {
             order.setQuantity(orderRequest.getQuantity());
             order.setStatus(orderRequest.getStatus());
             order.setDiscountCode(orderRequest.getDiscountCode());
-            orderRepository.save(order);
+            LocalDateTime startDate = LocalDate.now().atStartOfDay();
+            LocalDateTime endDate = LocalDate.now().atTime(23, 59, 59);
+            Integer totalOrders = orderRepository.countOrderByDate(startDate, endDate, username);
+            Integer totalProduct = orderRepository.sumProductByDate(startDate, endDate, username);
+            botTelegram.sendTextAddOder(GROUP_CHAT_ID, order, totalOrders, totalProduct);
         }
 
     }
@@ -118,15 +131,16 @@ public class OrderServiceIml implements OrderService {
     public MissCallResponse addNewOrderByMissCall() {
         logger.info("addNewOrderByMissCall");
         List<CallHistory> callHistories = callDataWebhookService.getAllMissCall();
-        if (callHistories.isEmpty()){
+        if (callHistories.isEmpty()) {
             throw new BadRequestException(
                     new SysError(Errors.NO_MISSED_CALLS, new ErrorParam(Errors.MISS_CALL)));
         }
         MissCallResponse missCallResponse = new MissCallResponse();
         for (CallHistory callHistory : callHistories) {
-            if(checkOrderMissCall(callHistory.getCallerPhone())){
+            if (checkOrderMissCall(callHistory.getCallerPhone())) {
                 callHistory.setStatus(true);
                 callDataWebhookRepository.save(callHistory);
+                this.addNewOrderByMissCall();
             } else {
                 String username = WebUtils.getUsername();
                 User user = userRepository.findByUsername(username).orElseThrow(
@@ -144,10 +158,11 @@ public class OrderServiceIml implements OrderService {
                 int totalMissCall = callDataWebhookRepository.getTotalMissCall();
                 missCallResponse.setMissCallId(savedOrder.getOrderId());
                 missCallResponse.setTotalMissCall(totalMissCall);
+                botTelegram.sendTextAddOderMissCall(GROUP_CHAT_ID, order);
                 break;
             }
         }
-        if (missCallResponse.getMissCallId() == null){
+        if (missCallResponse.getMissCallId() == null) {
             throw new BadRequestException(
                     new SysError(Errors.NO_MISSED_CALLS, new ErrorParam(Errors.MISS_CALL)));
         }
@@ -157,12 +172,13 @@ public class OrderServiceIml implements OrderService {
     @Override
     public void updateOrder(int orderId, OrderRequestDto orderRequest) {
         logger.info("updateOrder");
+        String username = WebUtils.getUsername();
         Order order = orderRepository.findById(orderId).orElseThrow(
                 () -> new BadRequestException(
                         new SysError(Errors.ERROR_ORDER_NOT_FOUND, new ErrorParam(Errors.ORDER_ID)))
         );
         String status = orderRequest.getStatus().toLowerCase();
-        if(!Status.getDisplayNames().contains(status)){
+        if (!Status.getDisplayNames().contains(status)) {
             throw new BadRequestException(
                     new SysError(Errors.ERROR_STATUS_FALSE, new ErrorParam(Errors.STATUS)));
         }
@@ -173,6 +189,11 @@ public class OrderServiceIml implements OrderService {
         order.setStatus(orderRequest.getStatus());
         order.setDiscountCode(orderRequest.getDiscountCode());
         order.setProduct(orderRequest.getProductName());
+        LocalDateTime startDate = LocalDate.now().atStartOfDay();
+        LocalDateTime endDate = LocalDate.now().atTime(23, 59, 59);
+        Integer totalOrders = orderRepository.countOrderByDate(startDate, endDate, username);
+        Integer totalProduct = orderRepository.sumProductByDate(startDate, endDate, username);
+        botTelegram.sendTextUpdateOder(GROUP_CHAT_ID, order, totalOrders, totalProduct);
         orderRepository.save(order);
     }
 
@@ -196,7 +217,7 @@ public class OrderServiceIml implements OrderService {
         );
         List<Order> orders;
         int roleId = user.getRole().getRoleId();
-        if( roleId == SUPER_ADMIN_ID || roleId == ADMIN_ID ){
+        if (roleId == SUPER_ADMIN_ID || roleId == ADMIN_ID) {
             orders = orderRepository.getAllOrder();
         } else {
             orders = orderRepository.getAllOrderByProduct(username);
@@ -247,7 +268,7 @@ public class OrderServiceIml implements OrderService {
                         new SysError(Errors.ERROR_USER_NOT_FOUND, new ErrorParam(Errors.USERNAME)))
         );
         LocalDateTime startDate = dateRange.getStartDate().atStartOfDay();
-        LocalDateTime endDate = dateRange.getEndDate().atTime(23,59,59);
+        LocalDateTime endDate = dateRange.getEndDate().atTime(23, 59, 59);
 
         OverviewDto overview = new OverviewDto();
         int totalProduct = 0;
@@ -256,9 +277,9 @@ public class OrderServiceIml implements OrderService {
 
         List<Order> orders;
         int roleId = user.getRole().getRoleId();
-        if( roleId == SUPER_ADMIN_ID || roleId == ADMIN_ID ){
+        if (roleId == SUPER_ADMIN_ID || roleId == ADMIN_ID) {
             orders = orderRepository.getOrderByDateRangeAndUsername(startDate, endDate);
-        }else {
+        } else {
             orders = orderRepository.getOrderByDateRangeAndUsername(startDate, endDate, username);
         }
 
@@ -293,7 +314,7 @@ public class OrderServiceIml implements OrderService {
 
             ChartOverviewDto overviewDto = new ChartOverviewDto();
             LocalDateTime startDays = date.toLocalDate().minusDays(i).atStartOfDay();
-            LocalDateTime endDays = date.toLocalDate().minusDays(i).atTime(23,59,59);
+            LocalDateTime endDays = date.toLocalDate().minusDays(i).atTime(23, 59, 59);
 
 
             int totalOrder;
@@ -302,12 +323,12 @@ public class OrderServiceIml implements OrderService {
             long totalTransportFee = 0L;
 
             int roleId = user.getRole().getRoleId();
-            if( roleId == SUPER_ADMIN_ID || roleId == ADMIN_ID){
+            if (roleId == SUPER_ADMIN_ID || roleId == ADMIN_ID) {
                 totalOrder = orderRepository.countOrder(startDays, endDays);
                 totalProduct = orderRepository.sumProduct(startDays, endDays);
                 orders = orderRepository.getOrderByDate(startDays, endDays);
-            }else {
-                totalOrder = orderRepository.countOrder(startDays,endDays, username);
+            } else {
+                totalOrder = orderRepository.countOrder(startDays, endDays, username);
                 totalProduct = orderRepository.sumProduct(startDays, endDays, username);
                 orders = orderRepository.getOrderByDate(startDays, endDays, username);
             }
@@ -341,7 +362,7 @@ public class OrderServiceIml implements OrderService {
         );
 
         LocalDateTime startDate = dateRangeDto.getStartDate().atStartOfDay();
-        LocalDateTime endDate = dateRangeDto.getEndDate().atTime(23,59,59);
+        LocalDateTime endDate = dateRangeDto.getEndDate().atTime(23, 59, 59);
 
         if (ObjectUtils.isEmpty(startDate) || ObjectUtils.isEmpty(endDate)) {
             throw new BadRequestException(
@@ -350,7 +371,7 @@ public class OrderServiceIml implements OrderService {
 
         List<Order> orders;
         int roleId = user.getRole().getRoleId();
-        if( roleId == SUPER_ADMIN_ID || roleId == ADMIN_ID ){
+        if (roleId == SUPER_ADMIN_ID || roleId == ADMIN_ID) {
             orders = orderRepository.getOrderByDateRange(startDate, endDate);
         } else {
             orders = orderRepository.getOrderByDateRange(startDate, endDate, username);
@@ -375,19 +396,19 @@ public class OrderServiceIml implements OrderService {
         OrderResponseDto orderResponseDto = new OrderResponseDto();
         List<Product> products;
         int roleId = user.getRole().getRoleId();
-        if( roleId == SUPER_ADMIN_ID || roleId == ADMIN_ID ){
+        if (roleId == SUPER_ADMIN_ID || roleId == ADMIN_ID) {
             products = productRepository.findAll();
         } else {
             products = user.getProducts();
         }
 
-        for (Product product:products
-             ) {
+        for (Product product : products
+        ) {
             List<Order> orders = orderRepository.getOrderByPhoneNumber(phoneNumber, product.getProductName());
             if (!orders.isEmpty()) {
                 for (Order order : orders) {
                     String status = order.getStatus().toLowerCase();
-                    if (status.equals(Status.PENDING.getDisplayName()) || status.equals(Status.INITIALIZATION.getDisplayName())){
+                    if (status.equals(Status.PENDING.getDisplayName()) || status.equals(Status.INITIALIZATION.getDisplayName())) {
                         throw new BadRequestException(
                                 new SysError("Đã tồn tại đơn hàng với tên: "
                                         .concat(order.getCustomer())
@@ -407,7 +428,7 @@ public class OrderServiceIml implements OrderService {
     public OrderResponseDto getOrder(int id) {
         logger.info("getOrder");
         Order order = orderRepository.getOrderByOrderId(id);
-        if(ObjectUtils.isEmpty(order)){
+        if (ObjectUtils.isEmpty(order)) {
             throw new BadRequestException(
                     new SysError(Errors.NOT_FOUND_ORDER, new ErrorParam(Errors.ORDER_ID)));
         }
@@ -434,19 +455,21 @@ public class OrderServiceIml implements OrderService {
 
         List<Product> products;
         int roleId = user.getRole().getRoleId();
-        if( roleId == SUPER_ADMIN_ID || roleId == ADMIN_ID ){
+        if (roleId == SUPER_ADMIN_ID || roleId == ADMIN_ID) {
             products = productRepository.findAll();
         } else {
             products = user.getProducts();
         }
 
-        for (Product product:products
+        for (Product product : products
         ) {
             List<Order> orders = orderRepository.getOrderByPhoneNumber(phoneNumber, product.getProductName());
             if (!orders.isEmpty()) {
                 for (Order order : orders) {
-                    if (order.getStatus().toLowerCase().equals(Status.PENDING.getDisplayName())) {
-                       return true;
+                    boolean statusPending = order.getStatus().toLowerCase().equals(Status.PENDING.getDisplayName());
+                    boolean statusInitialization = order.getStatus().toLowerCase().equals(Status.INITIALIZATION.getDisplayName());
+                    if (statusPending || statusInitialization) {
+                        return true;
                     }
                 }
             }

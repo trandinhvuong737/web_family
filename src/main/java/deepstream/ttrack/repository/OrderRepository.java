@@ -44,6 +44,10 @@ public interface OrderRepository extends JpaRepository<Order,Integer> {
     Integer sumProduct(LocalDateTime startDays, LocalDateTime endDays);
 
     @Query("SELECT sum (o.quantity) FROM Order o WHERE o.createAt between :startDays and :endDays"
+            + " and o.user.username = :username and o.status != 'initialization'")
+    Integer sumProductByDate(LocalDateTime startDays, LocalDateTime endDays, String username);
+
+    @Query("SELECT sum (o.quantity) FROM Order o WHERE o.createAt between :startDays and :endDays"
             + " and o.status = 'completed' and o.user.username = :username")
     Integer sumProduct(LocalDateTime startDays, LocalDateTime endDays, String username);
 
@@ -58,6 +62,9 @@ public interface OrderRepository extends JpaRepository<Order,Integer> {
             "AND o.status != 'initialization' AND o.user.username = :username " +
             "ORDER BY o.createAt DESC")
     List<Order> getOrderByDateRangeAndUsername(LocalDateTime startDate, LocalDateTime endDate, String username);
+    @Query("SELECT count (o.orderId) FROM Order o WHERE o.createAt between :startDays and :endDays "
+            + "AND o.user.username = :username and o.status != 'initialization'")
+    Integer countOrderByDate(LocalDateTime startDays, LocalDateTime endDays, String username);
 
     @Query("SELECT o FROM Order o WHERE o.createAt >= :startDate AND o.createAt <= :endDate AND o.status != 'initialization' " +
             "ORDER BY o.createAt DESC ")

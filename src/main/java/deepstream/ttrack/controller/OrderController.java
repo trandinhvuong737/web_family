@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -29,7 +30,7 @@ public class OrderController {
 
     @PostMapping("/new")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ResponseJson<Boolean>> createDevice(@RequestBody OrderRequestDto orderRequestDto) {
+    public ResponseEntity<ResponseJson<Boolean>> createDevice(@RequestBody OrderRequestDto orderRequestDto) throws TelegramApiException {
         logger.info("exportToExcel");
         orderService.addNewOrder(orderRequestDto);
         return ResponseEntity.ok().body(
@@ -41,7 +42,7 @@ public class OrderController {
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<ResponseJson<Boolean>> addNewOrderByDate(
             @RequestBody OrderRequestDto orderRequestDto,
-            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+            @PathVariable @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) throws TelegramApiException {
         logger.info("exportToExcel");
         orderService.addNewOrderByDate(orderRequestDto, date);
         return ResponseEntity.ok().body(
@@ -51,7 +52,7 @@ public class OrderController {
 
     @PostMapping("/new-order-miss-call")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<ResponseJson<MissCallResponse>> addNewOrderByMissCall() {
+    public ResponseEntity<ResponseJson<MissCallResponse>> addNewOrderByMissCall() throws TelegramApiException {
         logger.info("addNewOrderByMissCall");
         MissCallResponse missCallResponse = orderService.addNewOrderByMissCall();
         return ResponseEntity.ok().body(
